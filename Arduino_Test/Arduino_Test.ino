@@ -1,20 +1,20 @@
 #include <Arduino.h>
-#define Neg_1 D2
-#define Neg_2 D3
-#define Neg_3 D4
-#define Neg_4 D5
-#define Neg_5 D6
-#define Neg_6 D7
-#define Neg_7 D8
-#define Neg_8 D9
-#define Neg_9 D10
-#define Neg_10 D11
-#define Neg_11 D12
-#define Neg_12 D13
+#define Neg_1  2
+#define Neg_2  3
+#define Neg_3  4
+#define Neg_4  5
+#define Neg_5  6
+#define Neg_6  7
+#define Neg_7  8
+#define Neg_8  9
+#define Neg_9  10
+#define Neg_10 11
+#define Neg_11 12
+#define Neg_12 13
 
-#define Pos_1 D44
-#define Pos_2 D45
-#define Pos_3 D46
+#define Pos_1 44
+#define Pos_2 45
+#define Pos_3 46
 
 
 void cyle_neg();
