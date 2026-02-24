@@ -27,43 +27,49 @@ typedef enum
     /*********** TEXTILE 1 TAGS ***********/
     /**********************************/
     TAG_TEXTILE_1_PREVIOUS_SEQUENCE_STATE,
-    TAG_TEXTILE_1_ACTUAL_SEQUENCE_STATE,
+    TAG_TEXTILE_1_CURRENT_SEQUENCE_STATE,
     TAG_TEXTILE_1_PRESENCE_DETECTED,
+    TAG_TEXTILE_1_TRIGGER_TYPE,
 
     /**********************************/
     /*********** TEXTILE 2 TAGS ***********/
     /**********************************/
     TAG_TEXTILE_2_PREVIOUS_SEQUENCE_STATE,
-    TAG_TEXTILE_2_ACTUAL_SEQUENCE_STATE,
+    TAG_TEXTILE_2_CURRENT_SEQUENCE_STATE,
     TAG_TEXTILE_2_PRESENCE_DETECTED,
+    TAG_TEXTILE_2_TRIGGER_TYPE,
     
     /**********************************/
     /*********** TEXTILE 3 TAGS ***********/
     /**********************************/
     TAG_TEXTILE_3_PREVIOUS_SEQUENCE_STATE,
-    TAG_TEXTILE_3_ACTUAL_SEQUENCE_STATE,
+    TAG_TEXTILE_3_CURRENT_SEQUENCE_STATE,
     TAG_TEXTILE_3_PRESENCE_DETECTED,
+    TAG_TEXTILE_3_TRIGGER_TYPE,
     
     /**********************************/
     /*********** TEXTILE 4 TAGS ***********/
     /**********************************/
     TAG_TEXTILE_4_PREVIOUS_SEQUENCE_STATE,
-    TAG_TEXTILE_4_ACTUAL_SEQUENCE_STATE,
+    TAG_TEXTILE_4_CURRENT_SEQUENCE_STATE,
     TAG_TEXTILE_4_PRESENCE_DETECTED,
+    TAG_TEXTILE_4_TRIGGER_TYPE,
     
     /**********************************/
     /*********** TEXTILE 5 TAGS ***********/
     /**********************************/
     TAG_TEXTILE_5_PREVIOUS_SEQUENCE_STATE,
-    TAG_TEXTILE_5_ACTUAL_SEQUENCE_STATE,
+    TAG_TEXTILE_5_CURRENT_SEQUENCE_STATE,
     TAG_TEXTILE_5_PRESENCE_DETECTED,
-
+    TAG_TEXTILE_5_TRIGGER_TYPE,
+    
     /**********************************/
     /*********** TEXTILE 6 TAGS ***********/
     /**********************************/
     TAG_TEXTILE_6_PREVIOUS_SEQUENCE_STATE,
-    TAG_TEXTILE_6_ACTUAL_SEQUENCE_STATE,
+    TAG_TEXTILE_6_CURRENT_SEQUENCE_STATE,
     TAG_TEXTILE_6_PRESENCE_DETECTED,
+    TAG_TEXTILE_6_TRIGGER_TYPE,
     
 
     /**********************************/
