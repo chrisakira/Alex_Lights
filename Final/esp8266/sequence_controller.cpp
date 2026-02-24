@@ -14,7 +14,8 @@ extern "C" {
 
 
 enum sequences_s{
-    IDLE = 0,
+    NOT_CONNECTED = 0,
+    IDLE,
     SEQUENCE_A,
     SEQUENCE_B,
     SEQUENCE_C,
