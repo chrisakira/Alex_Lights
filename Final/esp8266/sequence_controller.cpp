@@ -711,7 +711,7 @@ void textile_1_loop(void){
                            (textile_3_presence != 0) + (textile_4_presence != 0);
 
     // Single: only device 1 present → 1D
-    bool sequence_1_D_single = (textile_1_presence != 0);
+    bool sequence_1_D_single = (textile_1_presence != 0 && all_idle && active_count == 1);
     if (debounce(&textile_1_single_debounce, sequence_1_D_single)) {
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_D);
