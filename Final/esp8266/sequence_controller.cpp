@@ -994,22 +994,23 @@ void textile_1_loop(void){
             if((current_timer > sequence_1_D[i].time_starts_at) &&
                (current_timer < sequence_1_D[i].time_ends_at))
             {
-                uint32_t duration = (sequence_1_D[i].time_ends_at - sequence_1_D[i].time_starts_at);
-                uint32_t middle_point = (sequence_1_D[i].time_starts_at + (duration/2));
-                if(current_timer <= middle_point){
-                    uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_D[i].value_starts_at, sequence_1_D[i].value_ends_at);
-                    if (mapped_value > 100)
-                        mapped_value = 100;
-                    setPin(sequence_1_D[i].led_index.negative_pin, mapped_value);
-                }
-                if(current_timer > middle_point){
-                    uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_D[i].value_ends_at, sequence_1_D[i].value_starts_at);
-                    if (mapped_value > 100)
-                        mapped_value = 100;
-                    setPin(sequence_1_D[i].led_index.negative_pin, mapped_value);
-                }
+                setPin(sequence_1_D[i].led_index.negative_pin, 80);
+                // uint32_t duration = (sequence_1_D[i].time_ends_at - sequence_1_D[i].time_starts_at);
+                // uint32_t middle_point = (sequence_1_D[i].time_starts_at + (duration/2));
+                // if(current_timer <= middle_point){
+                //     uint32_t duration_left = middle_point - current_timer;
+                //     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_D[i].value_starts_at, sequence_1_D[i].value_ends_at);
+                //     if (mapped_value > 100)
+                //         mapped_value = 100;
+                //     setPin(sequence_1_D[i].led_index.negative_pin, mapped_value);
+                // }
+                // if(current_timer > middle_point){
+                //     uint32_t duration_left = current_timer - middle_point;
+                //     uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_D[i].value_ends_at, sequence_1_D[i].value_starts_at);
+                //     if (mapped_value > 100)
+                //         mapped_value = 100;
+                //     setPin(sequence_1_D[i].led_index.negative_pin, mapped_value);
+                // }
             }
         }
         if(current_timer > sequence_1_D[sequence_1_D_size - 1].time_ends_at)
