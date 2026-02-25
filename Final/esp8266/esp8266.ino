@@ -14,6 +14,7 @@ extern "C" {
 
 void setup() {
     startup();
+    sequence_init();
 }
 
 void loop() {
@@ -31,7 +32,7 @@ void loop() {
 
     if (now - lastSeqMs >= SEQ_INTERVAL) {
         lastSeqMs = now;
-        loop_sequence(0);
+        loop_sequence(1);
         write_laser_range_to_datatable();
     }
 

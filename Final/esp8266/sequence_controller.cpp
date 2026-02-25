@@ -496,6 +496,8 @@ static uint32_t textile_2_trigger_type = 0;
 static uint32_t textile_3_trigger_type = 0;
 static uint32_t textile_4_trigger_type = 0;
 
+void update_sequence(uint32_t current_sequence);
+
 static bool inline debounce(debounce_timer_st* timer, bool condition) {
     uint32_t millis_timer = millis();
     if (condition) {
@@ -541,6 +543,10 @@ void update_datatable_data(void){
     get_data_table(TAG_TEXTILE_3_TRIGGER_TYPE, &textile_3_trigger_type, sizeof(textile_3_trigger_type));
     get_data_table(TAG_TEXTILE_4_TRIGGER_TYPE, &textile_4_trigger_type, sizeof(textile_4_trigger_type));
 
+}
+
+void sequence_init(){
+    update_sequence(IDLE);
 }
 
 void print_debug_datatable_data(void){

@@ -14,7 +14,7 @@ void textile_1_loop(void);
 void textile_2_loop(void);
 void textile_3_loop(void); 
 void textile_4_loop(void);
-
+void sequence_init();
 
 
 

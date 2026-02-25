@@ -33,7 +33,7 @@ uint32_t get_laser_range(void)
     VL53L0X_RangingMeasurementData_t measure;
     lox.rangingTest(&measure, false);
     if (measure.RangeStatus != 4) {  // phase failures have incorrect data
-        Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
+        // Serial.print("Distance (mm): "); Serial.println(measure.RangeMilliMeter);
         if((measure.RangeMilliMeter > MIN_VL_RANGE) && (measure.RangeMilliMeter < MAX_VL_RANGE))
             return 1;
     } else {

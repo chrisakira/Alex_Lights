@@ -20,7 +20,7 @@ extern uint8_t textile_id;
 
 /******************* I2C CODE *******************/
 #define I2C_SLAVE_ADDR   0x08
-#define MIN_VL_RANGE   100
+#define MIN_VL_RANGE    100
 #define MAX_VL_RANGE   1500
 
 #define SDA_PIN          4
