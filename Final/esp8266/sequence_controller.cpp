@@ -74,17 +74,17 @@ sequence_commands_st sequence_1_B[] = {
     {TEXT_1_B1, 0,    500,  0, 250},
     {TEXT_1_B1, 1000, 1500, 0, 250},
     {TEXT_1_B1, 2000, 3000, 0, 250},
-    {TEXT_1_B2, 1500, 2000, 0, 250},
-    {TEXT_1_B2, 2500, 3500, 0, 250},
+    // {TEXT_1_B2, 1500, 2000, 0, 250},
+    // {TEXT_1_B2, 2500, 3500, 0, 250},
     {TEXT_1_B3, 3000, 3500, 0, 250},
     {TEXT_1_B3, 4000, 4500, 0, 250},
     {TEXT_1_B3, 5000, 6000, 0, 250},
-    {TEXT_1_B4, 4500, 5000, 0, 250},
-    {TEXT_1_B4, 5500, 6500, 0, 250},
+    // {TEXT_1_B4, 4500, 5000, 0, 250},
+    // {TEXT_1_B4, 5500, 6500, 0, 250},
     {TEXT_1_B5, 6000, 6500, 0, 250},
     {TEXT_1_B5, 7000, 7500, 0, 250},
-    {TEXT_1_B6, 6500, 7000, 0, 250},
-    {TEXT_1_B6, 7500, 8500, 0, 250},
+    // {TEXT_1_B6, 6500, 7000, 0, 250},
+    // {TEXT_1_B6, 7500, 8500, 0, 250},
     {TEXT_1_B5, 8000, 9000, 0, 250},
 };
 uint16_t sequence_1_B_size = sizeof(sequence_1_B) / sizeof(sequence_1_B[0]);
@@ -106,10 +106,10 @@ uint16_t sequence_1_C_size = sizeof(sequence_1_C) / sizeof(sequence_1_C[0]);
 sequence_commands_st sequence_1_D[] = {
     {TEXT_1_D1, 0,    2000, 0, 250},
     // {TEXT_1_D2, 1000, 4000, 0, 250},
-    {TEXT_1_D3, 3000, 5000, 0, 250},
+    // {TEXT_1_D3, 3000, 5000, 0, 250},
     {TEXT_1_D4, 4000, 6000, 0, 250},
     // {TEXT_1_D5, 5000, 8000, 0, 250},
-    {TEXT_1_D6, 7000, 9000, 0, 250},
+    // {TEXT_1_D6, 7000, 9000, 0, 250},
     {TEXT_1_D7, 8000, 10000, 0, 250},
     // {TEXT_1_D8, 9000, 11000, 0, 250},
 };
@@ -667,7 +667,7 @@ void loop_sequence(uint8_t debug_info){
 
  
     static unsigned long lastTimeoutMs = 0;
-    const unsigned long TIMEOUT_VALUE  = 12000UL; // 90 sec
+    const unsigned long TIMEOUT_VALUE  = 90000UL; // 90 sec
  
     unsigned long now = millis();
 
@@ -827,6 +827,7 @@ void textile_1_loop(void){
             setPin(IDX_D45, 0);
         else
             setPin(IDX_D45, 255);
+        uint8_t active_leds[12] = {0};
         for (uint16_t i = 0 ; i < sequence_1_A_size ; i++)
         {
             if((current_timer > sequence_1_A[i].time_starts_at) &&
@@ -839,16 +840,21 @@ void textile_1_loop(void){
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_A[i].value_starts_at, sequence_1_A[i].value_ends_at);
                     if (mapped_value > 220)
                         mapped_value = 245;
-                    setPin(sequence_1_A[i].led_index.negative_pin, mapped_value);
+                    active_leds[sequence_1_A[i].led_index.negative_pin] = mapped_value;
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
                     uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_A[i].value_ends_at, sequence_1_A[i].value_starts_at);
                     if (mapped_value > 220)
                         mapped_value = 245;
-                    setPin(sequence_1_A[i].led_index.negative_pin, mapped_value);
+                    active_leds[sequence_1_A[i].led_index.negative_pin] = mapped_value;
                 }
             }
+        }
+
+        for (uint16_t i = 0 ; i < 12 ; i++)
+        {
+            setPin(i, active_leds[i]);
         }
         if(current_timer > sequence_1_A[sequence_1_A_size - 1].time_ends_at)
         {
@@ -881,6 +887,7 @@ void textile_1_loop(void){
             setPin(IDX_D45, 0);
         else
             setPin(IDX_D45, 255);
+        uint8_t active_leds[12] = {0};
         for (uint16_t i = 0 ; i < sequence_1_B_size ; i++)
         {
             if((current_timer > sequence_1_B[i].time_starts_at) &&
@@ -893,16 +900,21 @@ void textile_1_loop(void){
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_B[i].value_starts_at, sequence_1_B[i].value_ends_at);
                     if (mapped_value > 220)
                         mapped_value = 245;
-                    setPin(sequence_1_B[i].led_index.negative_pin, mapped_value);
+                    active_leds[sequence_1_B[i].led_index.negative_pin] = mapped_value;
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point; 
                     uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_B[i].value_ends_at, sequence_1_B[i].value_starts_at);
                     if (mapped_value > 220)
                         mapped_value = 245;
-                    setPin(sequence_1_B[i].led_index.negative_pin, mapped_value);
+                    active_leds[sequence_1_B[i].led_index.negative_pin] = mapped_value;
                 }
             }
+        }
+
+        for (uint16_t i = 0 ; i < 12 ; i++)
+        {
+            setPin(i, active_leds[i]);
         }
         if(current_timer > sequence_1_B[sequence_1_B_size - 1].time_ends_at)
         {
@@ -935,6 +947,7 @@ void textile_1_loop(void){
             setPin(IDX_D45, 0);
         else
             setPin(IDX_D45, 255);
+        uint8_t active_leds[12] = {0};
         for (uint16_t i = 0 ; i < sequence_1_C_size ; i++)
         {
             if((current_timer > sequence_1_C[i].time_starts_at) &&
@@ -947,16 +960,20 @@ void textile_1_loop(void){
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_C[i].value_starts_at, sequence_1_C[i].value_ends_at);
                     if (mapped_value > 220)
                         mapped_value = 245;
-                    setPin(sequence_1_C[i].led_index.negative_pin, mapped_value);
+                    active_leds[sequence_1_C[i].led_index.negative_pin] = mapped_value;
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
                     uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_C[i].value_ends_at, sequence_1_C[i].value_starts_at);
                     if (mapped_value > 220)
                         mapped_value = 245;
-                    setPin(sequence_1_C[i].led_index.negative_pin, mapped_value);
+                    active_leds[sequence_1_C[i].led_index.negative_pin] = mapped_value;
                 }
             }
+        }
+        for (uint16_t i = 0 ; i < 12 ; i++)
+        {
+            setPin(i, active_leds[i]);
         }
         if(current_timer > sequence_1_C[sequence_1_C_size-1].time_ends_at)
         {
@@ -1027,6 +1044,29 @@ void textile_1_loop(void){
 
     if( textile_1_current_sequence == SEQUENCE_P ){
         uint32_t current_timer = millis() - internal_sequence_timer;
+        uint8_t is_44_on = false;
+        uint8_t is_45_on = false;
+        for (uint16_t i = 0 ; i < sequence_1_P_size ; i++)
+        {
+            if((current_timer > sequence_1_P[i].time_starts_at) &&
+               (current_timer < sequence_1_P[i].time_ends_at))
+            {
+                if (sequence_1_P[i].led_index.positive_pin == IDX_D44)
+                    is_44_on = true;
+                if (sequence_1_P[i].led_index.positive_pin == IDX_D45)
+                    is_45_on = true;
+            }
+        }
+        if(!is_44_on)
+            setPin(IDX_D44, 0);
+        else
+            setPin(IDX_D44, 255);
+
+        if(!is_45_on)
+            setPin(IDX_D45, 0);
+        else
+            setPin(IDX_D45, 255);
+        uint8_t active_leds[12] = {0};
         for (uint16_t i = 0 ; i < sequence_1_P_size ; i++)
         {
             if((current_timer > sequence_1_P[i].time_starts_at) &&
@@ -1034,26 +1074,26 @@ void textile_1_loop(void){
             {
                 uint32_t duration = (sequence_1_P[i].time_ends_at - sequence_1_P[i].time_starts_at);
                 uint32_t middle_point = (sequence_1_P[i].time_starts_at + (duration/2));
-                if (sequence_1_P[i].led_index.positive_pin == IDX_D44)
-                    setPin(IDX_D45, 0);
-                if (sequence_1_P[i].led_index.positive_pin == IDX_D45)
-                    setPin(IDX_D44, 0);
-                setPin(sequence_1_P[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_P[i].value_starts_at, sequence_1_P[i].value_ends_at);
                     if (mapped_value > 220)
                         mapped_value = 245;
-                    setPin(sequence_1_P[i].led_index.negative_pin, mapped_value);
+                    active_leds[sequence_1_P[i].led_index.negative_pin] = mapped_value;
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
                     uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_P[i].value_ends_at, sequence_1_P[i].value_starts_at);
                     if (mapped_value > 220)
                         mapped_value = 245;
-                    setPin(sequence_1_P[i].led_index.negative_pin, mapped_value);
+                    active_leds[sequence_1_P[i].led_index.negative_pin] = mapped_value;
                 }
             }
+        }
+
+        for (uint16_t i = 0 ; i < 12 ; i++)
+        {
+            setPin(i, active_leds[i]);
         }
         if(current_timer > sequence_1_P[sequence_1_P_size - 1].time_ends_at)
         {
