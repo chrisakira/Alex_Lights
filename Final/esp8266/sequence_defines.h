@@ -94,7 +94,7 @@
 #define TEXT_3_A9  {IDX_D44, IDX_D9}
 #define TEXT_3_A10 {IDX_D44, IDX_D10}
 #define TEXT_3_A11 {IDX_D45, IDX_D10}
-#define TEXT_3_A12 {IDX_D45, IDX_D12}
+#define TEXT_3_A12 {IDX_D45, IDX_D11}
 
 #define TEXT_3_B1 {IDX_D44, IDX_D8}
 #define TEXT_3_B2 {IDX_D44, IDX_D5}
@@ -111,7 +111,7 @@
 #define TEXT_3_C9  {IDX_D45, IDX_D10}
 #define TEXT_3_C10 {IDX_D45, IDX_D6}
 #define TEXT_3_C11 {IDX_D45, IDX_D9}
-#define TEXT_3_C12 {IDX_D45, IDX_D12}
+#define TEXT_3_C12 {IDX_D45, IDX_D11}
 
 #define TEXT_3_D1 {IDX_D44, IDX_D2}
 #define TEXT_3_D2 {IDX_D44, IDX_D5}
@@ -122,7 +122,7 @@
 #define TEXT_3_P3 {IDX_D44, IDX_D7}
 #define TEXT_3_P4 {IDX_D45, IDX_D9}
 #define TEXT_3_P5 {IDX_D44, IDX_D10}
-#define TEXT_3_P6 {IDX_D45, IDX_D12}
+#define TEXT_3_P6 {IDX_D45, IDX_D11}
 /**************** END TEXTILE 3 ****************/
 
 /**************** TEXTILE 4 ****************/

@@ -798,6 +798,7 @@ void textile_1_loop(void){
                                     textile_3_current_sequence == FINISHED &&
                                     textile_4_current_sequence == FINISHED);
     if (debounce(&textile_1_finished_debounce, sequence_1_all_finished)) {
+        delay(500); // Small delay to ensure the last sequence finishes before resetting
         update_trigger(NOT_TRIGGERED);
         update_sequence(IDLE);
         clear_debounce(&textile_1_finished_debounce);
@@ -1232,6 +1233,7 @@ void textile_2_loop(void){
         if (textile_2_trigger_type == DOUBLE && textile_1_trigger_type == DOUBLE) {
             update_sequence(SEQUENCE_P);
         } else {
+            delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
             update_sequence(IDLE);
         }
@@ -1728,6 +1730,7 @@ void textile_3_loop(void){
             (textile_1_trigger_type == DOUBLE || textile_2_trigger_type == DOUBLE)) {
             update_sequence(SEQUENCE_P);
         } else {
+            delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
             update_sequence(IDLE);
         }
@@ -2154,6 +2157,7 @@ void textile_4_loop(void){
              textile_3_trigger_type == DOUBLE)) {
             update_sequence(SEQUENCE_P);
         } else {
+            delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
             update_sequence(IDLE);
         }
