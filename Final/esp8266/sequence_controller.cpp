@@ -713,7 +713,6 @@ void textile_1_loop(void){
     // Single: only device 1 present → 1D
     bool sequence_1_D_single = (textile_1_presence != 0);
     if (debounce(&textile_1_single_debounce, sequence_1_D_single)) {
-        printf("Sequence 1: Single detected\n");
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_1_single_debounce);
@@ -1195,6 +1194,28 @@ void textile_2_loop(void){
 
     if( textile_2_current_sequence == SEQUENCE_A ){
         uint32_t current_timer = millis() - internal_sequence_timer;
+        uint8_t is_44_on = false;
+        uint8_t is_45_on = false;
+        for (uint16_t i = 0 ; i < sequence_2_A_size ; i++)
+        {
+            if((current_timer > sequence_2_A[i].time_starts_at) &&
+               (current_timer < sequence_2_A[i].time_ends_at))
+            {
+                if (sequence_2_A[i].led_index.positive_pin == IDX_D44)
+                    is_44_on = true;
+                if (sequence_2_A[i].led_index.positive_pin == IDX_D45)
+                    is_45_on = true;
+            }
+        }
+        if(!is_44_on)
+            setPin(IDX_D44, 0);
+        else
+            setPin(IDX_D44, 255);
+
+        if(!is_45_on)
+            setPin(IDX_D45, 0);
+        else
+            setPin(IDX_D45, 255);
         for (uint16_t i = 0 ; i < sequence_2_A_size ; i++)
         {
             if((current_timer > sequence_2_A[i].time_starts_at) &&
@@ -1202,11 +1223,6 @@ void textile_2_loop(void){
             {
                 uint32_t duration = (sequence_2_A[i].time_ends_at - sequence_2_A[i].time_starts_at);
                 uint32_t middle_point = (sequence_2_A[i].time_starts_at + (duration/2));
-                if (sequence_2_A[i].led_index.positive_pin == IDX_D44)
-                    setPin(IDX_D45, 0);
-                if (sequence_2_A[i].led_index.positive_pin == IDX_D45)
-                    setPin(IDX_D44, 0);
-                setPin(sequence_2_A[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_A[i].value_starts_at, sequence_2_A[i].value_ends_at);
@@ -1232,6 +1248,28 @@ void textile_2_loop(void){
 
     if( textile_2_current_sequence == SEQUENCE_B ){
         uint32_t current_timer = millis() - internal_sequence_timer;
+        uint8_t is_44_on = false;
+        uint8_t is_45_on = false;
+        for (uint16_t i = 0 ; i < sequence_2_B_size ; i++)
+        {
+            if((current_timer > sequence_2_B[i].time_starts_at) &&
+               (current_timer < sequence_2_B[i].time_ends_at))
+            {
+                if (sequence_2_B[i].led_index.positive_pin == IDX_D44)
+                    is_44_on = true;
+                if (sequence_2_B[i].led_index.positive_pin == IDX_D45)
+                    is_45_on = true;
+            }
+        }
+        if(!is_44_on)
+            setPin(IDX_D44, 0);
+        else
+            setPin(IDX_D44, 255);
+
+        if(!is_45_on)
+            setPin(IDX_D45, 0);
+        else
+            setPin(IDX_D45, 255);
         for (uint16_t i = 0 ; i < sequence_2_B_size ; i++)
         {
             if((current_timer > sequence_2_B[i].time_starts_at) &&
@@ -1239,11 +1277,6 @@ void textile_2_loop(void){
             {
                 uint32_t duration = (sequence_2_B[i].time_ends_at - sequence_2_B[i].time_starts_at);
                 uint32_t middle_point = (sequence_2_B[i].time_starts_at + (duration/2));
-                if (sequence_2_B[i].led_index.positive_pin == IDX_D44)
-                    setPin(IDX_D45, 0);
-                if (sequence_2_B[i].led_index.positive_pin == IDX_D45)
-                    setPin(IDX_D44, 0);
-                setPin(sequence_2_B[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_B[i].value_starts_at, sequence_2_B[i].value_ends_at);
