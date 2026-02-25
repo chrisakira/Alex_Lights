@@ -12,7 +12,7 @@ extern "C" {
 #include "DataTableSyncHandler.h"
 #include "DataTags.h"
 }
-
+ 
 /******************* GLOBAL *******************/
 extern uint8_t textile_id;
 

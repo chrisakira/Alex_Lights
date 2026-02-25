@@ -6,7 +6,7 @@
 
 extern "C" {
 #include "ComponentCommonDefinitions.h"
-#include "DataTableHandler.h"
+#include "DataTableHandler.h" 
 #include "DataTableSyncHandler.h"
 #include "DataTags.h"
 }
@@ -31,7 +31,7 @@ void loop() {
 
     if (now - lastSeqMs >= SEQ_INTERVAL) {
         lastSeqMs = now;
-        loop_sequence(1);
+        loop_sequence(0);
         write_laser_range_to_datatable();
     }
 

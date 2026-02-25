@@ -11,7 +11,7 @@ Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 // Send a single [pinIndex, value] command to the expander.
 void setPin(uint8_t pinIndex, uint8_t value) {
     delay(1);
-    Wire.beginTransmission(I2C_SLAVE_ADDR);
+    Wire.beginTransmission(I2C_SLAVE_ADDR); 
     Wire.write(pinIndex);
     Wire.write(value);
     Wire.endTransmission();
@@ -75,12 +75,12 @@ static broadcast_msg_st rx_msg;
 
 // Callback: On data sent status
 void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
-    Serial.print("Last Packet Send Status: ");
-    if (sendStatus == 0) {
-        Serial.println("Delivery success");
-    } else {
-        Serial.println("Delivery fail");
-    }
+    //Serial.print("Last Packet Send Status: ");
+    //if (sendStatus == 0) {
+    //    Serial.println("Delivery success");
+    //} else {
+    //    Serial.println("Delivery fail");
+    //}
 }
 
 uint8_t sync_send(const broadcast_msg_st* msg)
@@ -180,5 +180,6 @@ void startup(void){
     Serial.begin(115200);
     wifi_boot();
     datatable_boot();   
+    wire_boot();
     Serial.println("ESP-NOW ready. Use sendMessage(msg) or let loop() send periodically.");
 }
