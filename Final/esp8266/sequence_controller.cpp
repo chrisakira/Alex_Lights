@@ -1922,4 +1922,7 @@ void textile_4_loop(void){
                 update_sequence(IDLE);
             } else {
                 update_sequence(FINISHED);
-            }
+            }        }
+    }
+
+}
