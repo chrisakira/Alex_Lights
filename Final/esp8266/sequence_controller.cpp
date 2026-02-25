@@ -11,7 +11,7 @@ extern "C" {
 }
 #define MIN_VALUE 0
 #define MAX_VALUE 255
-#define DEBOUNCE_TIMER 500
+#define DEBOUNCE_TIMER 200
 
 
 enum sequences_s{
@@ -550,10 +550,10 @@ void sequence_init(){
 }
 
 void print_debug_datatable_data(void){
-    printf("Textile Presence.       1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_presence,           textile_2_presence,          textile_3_presence,          textile_4_presence);
-    printf("Textile Current state.  1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_current_sequence,   textile_2_current_sequence,  textile_3_current_sequence,  textile_4_current_sequence);
-    printf("Textile previous state. 1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_previous_sequence,  textile_2_previous_sequence, textile_3_previous_sequence, textile_4_previous_sequence);
-    printf("Textile Trigger Type.   1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_trigger_type,       textile_2_trigger_type,      textile_3_trigger_type,      textile_4_trigger_type);
+    // printf("Textile Presence.       1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_presence,           textile_2_presence,          textile_3_presence,          textile_4_presence);
+    printf("State:  1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_current_sequence,   textile_2_current_sequence,  textile_3_current_sequence,  textile_4_current_sequence);
+    // printf("Textile previous state. 1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_previous_sequence,  textile_2_previous_sequence, textile_3_previous_sequence, textile_4_previous_sequence);
+    // printf("Textile Trigger Type.   1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_trigger_type,       textile_2_trigger_type,      textile_3_trigger_type,      textile_4_trigger_type);
 }
 
 static uint32_t get_current_sequence()
@@ -711,8 +711,9 @@ void textile_1_loop(void){
                            (textile_3_presence != 0) + (textile_4_presence != 0);
 
     // Single: only device 1 present → 1D
-    bool sequence_1_D_single = (all_idle && textile_1_presence != 0 && active_count == 1);
+    bool sequence_1_D_single = (textile_1_presence != 0);
     if (debounce(&textile_1_single_debounce, sequence_1_D_single)) {
+        printf("Sequence 1: Single detected\n");
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_1_single_debounce);

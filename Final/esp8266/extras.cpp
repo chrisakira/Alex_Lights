@@ -10,7 +10,6 @@ Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 // Send a single [pinIndex, value] command to the expander.
 void setPin(uint8_t pinIndex, uint8_t value) {
-    delay(1);
     Wire.beginTransmission(I2C_SLAVE_ADDR); 
     Wire.write(pinIndex);
     Wire.write(value);
@@ -150,7 +149,7 @@ void wifi_boot(void){
 
 void datatable_boot(void){
     // Init DataTable
-    if (init_data_table_handler((uint8_t)1) != (uint8_t)OK)
+    if (init_data_table_handler((uint8_t)textile_id) != (uint8_t)OK)
     {
         Serial.println("DataTable init failed!");
         while(1) delay(1000);
