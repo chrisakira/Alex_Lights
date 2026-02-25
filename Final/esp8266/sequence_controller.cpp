@@ -13,6 +13,7 @@ extern "C" {
 #define MAX_VALUE 255
 #define DEBOUNCE_TIMER 500
 
+
 enum sequences_s{
     NOT_CONNECTED = 0,
     IDLE,
@@ -23,7 +24,8 @@ enum sequences_s{
     SEQUENCE_E,
     SEQUENCE_P,
     FINISHED,
-}sequences_st;
+};
+
 
 enum sequence_trigger_s{
     NOT_TRIGGERED = 0,
@@ -31,7 +33,8 @@ enum sequence_trigger_s{
     DOUBLE,
     TRIPLE,
     FOUR,
-}sequence_trigger_st;
+};
+
 
 typedef struct led_command_e{
     uint8_t positive_pin;
@@ -57,8 +60,6 @@ typedef struct {
 } debounce_timer_st;
 
 
-uint8_t active_sequence = IDLE; 
-
 /************** SEQUENCE 1 **************/
 sequence_commands_st sequence_1_A[] = {
     {TEXT_1_A1, 0,    3000, 0, 255},
@@ -82,9 +83,9 @@ sequence_commands_st sequence_1_B[] = {
     {TEXT_1_B4, 5500, 6500, 0, 255},
     {TEXT_1_B5, 6000, 6500, 0, 255},
     {TEXT_1_B5, 7000, 7500, 0, 255},
-    {TEXT_1_B5, 8000, 9000, 0, 255},
     {TEXT_1_B6, 6500, 7000, 0, 255},
     {TEXT_1_B6, 7500, 8500, 0, 255},
+    {TEXT_1_B5, 8000, 9000, 0, 255},
 };
 uint16_t sequence_1_B_size = sizeof(sequence_1_B) / sizeof(sequence_1_B[0]);
 
@@ -192,23 +193,21 @@ sequence_commands_st sequence_2_D[] = {
 uint16_t sequence_2_D_size = sizeof(sequence_2_D) / sizeof(sequence_2_D[0]);
 
 sequence_commands_st sequence_2_E[] = {
-    {TEXT_2_E1, 0,    2000,  0, 255},
-    {TEXT_2_E2, 1000, 3000,  0, 255},
-    {TEXT_2_E3, 2000, 4000,  0, 255},
-    {TEXT_2_E4, 3000, 5000,  0, 255},
-    {TEXT_2_E5, 4000, 6000,  0, 255},
-
-    {TEXT_2_E1, 6000, 7000,  0, 255},
-    {TEXT_2_E2, 6500, 7500,  0, 255},
-    {TEXT_2_E3, 7000, 8000,  0, 255},
-    {TEXT_2_E4, 8000, 9000,  0, 255},
-    {TEXT_2_E5, 9000, 10000, 0, 255},
-
-    {TEXT_2_E1, 10000, 10500,  0, 255},
-    {TEXT_2_E2, 10500, 11000,  0, 255},
-    {TEXT_2_E3, 10000, 11500,  0, 255},
-    {TEXT_2_E4, 15000, 12000,  0, 255},
-    {TEXT_2_E5, 12000, 12500, 0, 255},
+    {TEXT_2_E1,     0,  2000, 0, 255},
+    {TEXT_2_E2,  1000,  3000, 0, 255},
+    {TEXT_2_E3,  2000,  4000, 0, 255},
+    {TEXT_2_E4,  3000,  5000, 0, 255},
+    {TEXT_2_E5,  4000,  6000, 0, 255},
+    {TEXT_2_E1,  6000,  7000, 0, 255},
+    {TEXT_2_E2,  6500,  7500, 0, 255},
+    {TEXT_2_E3,  7000,  8000, 0, 255},
+    {TEXT_2_E4,  8000,  9000, 0, 255},
+    {TEXT_2_E5,  9000, 10000, 0, 255},
+    {TEXT_2_E1, 10000, 10500, 0, 255},
+    {TEXT_2_E2, 10500, 11000, 0, 255},
+    {TEXT_2_E3, 10000, 11500, 0, 255},
+    {TEXT_2_E4, 11500, 12000, 0, 255}, // Yeah this is correct
+    {TEXT_2_E5, 12000, 12500, 0, 255}, // Yeah this is correct
 
 };
 uint16_t sequence_2_E_size = sizeof(sequence_2_E) / sizeof(sequence_2_E[0]);
@@ -336,6 +335,7 @@ sequence_commands_st sequence_3_P[] = {
     {TEXT_3_P6, 5500, 5750, 0, 255},
 };
 uint16_t sequence_3_P_size = sizeof(sequence_3_P) / sizeof(sequence_3_P[0]);
+
 
 /************** SEQUENCE 4 **************/
 sequence_commands_st sequence_4_A[] = {
@@ -550,7 +550,6 @@ void print_debug_datatable_data(void){
     printf("Textile Trigger Type.   1: %d, 2: %d, 3: %d, 4: %d\n", textile_1_trigger_type,       textile_2_trigger_type,      textile_3_trigger_type,      textile_4_trigger_type);
 }
 
-
 static uint32_t get_current_sequence()
 {
     uint32_t current_sequence_tag = 0;
@@ -607,7 +606,7 @@ void update_sequence(uint32_t current_sequence)
     write_data_table(previous_sequence_tag, &tmp_var, sizeof(tmp_var));
     
     tmp_var = current_sequence;
-    write_data_table(current_sequence_tag, &active_sequence, sizeof(active_sequence));
+    write_data_table(current_sequence_tag, &tmp_var, sizeof(tmp_var));
     internal_sequence_timer = millis();
 }
 
@@ -636,7 +635,7 @@ void update_trigger(uint32_t new_trigger)
     write_data_table(trigger_tag, &tmp_var, sizeof(tmp_var));
 }
 
-void loop_sequence(uint8_t debug_info = 0){
+void loop_sequence(uint8_t debug_info){
 
     update_datatable_data();
     if(0 != debug_info)
@@ -660,9 +659,9 @@ void loop_sequence(uint8_t debug_info = 0){
             break;
     }
 
-    
+
     static unsigned long lastTimeoutMs = 0;
-    const unsigned long TIMEOUT_VALUE  = 10000UL; // 10 s
+    const unsigned long TIMEOUT_VALUE  = 30000UL; // 30 s
  
     unsigned long now = millis();
 
@@ -685,64 +684,113 @@ void loop_sequence(uint8_t debug_info = 0){
 }
 
 void textile_1_loop(void){
-    
-    // Initialize debounce timer (add near other static variables)
-    static debounce_timer_st textile_1_single_debounce   = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_1_from2_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_1_from3_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_1_from4_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_1_finished_debounce = {0, false, DEBOUNCE_TIMER};
 
-    bool sequence_1_D_single =  (textile_1_current_sequence == IDLE &&
-                                 textile_2_current_sequence == IDLE &&
-                                 textile_3_current_sequence == IDLE &&
-                                 textile_4_current_sequence == IDLE && 
-                                 textile_1_presence != 0 && 
-                                 textile_2_presence == 0 &&
-                                 textile_3_presence == 0 &&
-                                 textile_4_presence == 0);  //Starts at sequence 1 D
+    // Initialize debounce timers
+    static debounce_timer_st textile_1_single_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_double_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_triple_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_four_debounce        = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_from2_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_from3_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_from4_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_from_triple_debounce = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_finished_debounce    = {0, false, DEBOUNCE_TIMER};
 
+    bool all_idle = (textile_1_current_sequence == IDLE &&
+                     textile_2_current_sequence == IDLE &&
+                     textile_3_current_sequence == IDLE &&
+                     textile_4_current_sequence == IDLE);
+
+    uint8_t active_count = (textile_1_presence != 0) + (textile_2_presence != 0) +
+                           (textile_3_presence != 0) + (textile_4_presence != 0);
+
+    // Single: only device 1 present → 1D
+    bool sequence_1_D_single = (all_idle && textile_1_presence != 0 && active_count == 1);
     if (debounce(&textile_1_single_debounce, sequence_1_D_single)) {
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_1_single_debounce);
     }
 
+    // Double: device 1 + one other → 1D (device 1 always primary)
+    bool sequence_1_double_cond = (all_idle && textile_1_presence != 0 && active_count == 2);
+    if (debounce(&textile_1_double_debounce, sequence_1_double_cond)) {
+        update_trigger(DOUBLE);
+        update_sequence(SEQUENCE_D);
+        clear_debounce(&textile_1_double_debounce);
+    }
 
+    // Triple: device 1 + two others → 1P immediately
+    bool sequence_1_triple_cond = (all_idle && textile_1_presence != 0 && active_count == 3);
+    if (debounce(&textile_1_triple_debounce, sequence_1_triple_cond)) {
+        update_trigger(TRIPLE);
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_1_triple_debounce);
+    }
+
+    // Four: all devices → 1P immediately
+    bool sequence_1_four_cond = (all_idle && textile_1_presence != 0 && active_count == 4);
+    if (debounce(&textile_1_four_debounce, sequence_1_four_cond)) {
+        update_trigger(FOUR);
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_1_four_debounce);
+    }
+
+    // From textile 2 chain: 2B → 3C → 4D → 1C
     bool sequence_1_from2_cond = (textile_1_current_sequence == IDLE &&
                                   textile_2_current_sequence == FINISHED &&
                                   textile_3_current_sequence == FINISHED &&
                                   textile_4_current_sequence == FINISHED &&
-                                  textile_2_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 2
+                                  (textile_2_trigger_type == SINGLE ||
+                                   (textile_2_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE)));
     if (debounce(&textile_1_from2_debounce, sequence_1_from2_cond)) {
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_1_from2_debounce);
     }
 
+    // From textile 3 chain: 3A → 1A
     bool sequence_1_from3_cond = (textile_1_current_sequence == IDLE &&
                                   textile_2_current_sequence == IDLE &&
                                   textile_3_current_sequence == FINISHED &&
                                   textile_4_current_sequence == IDLE &&
-                                  textile_3_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 3
+                                  (textile_3_trigger_type == SINGLE ||
+                                   (textile_3_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE && textile_2_trigger_type != DOUBLE)));
     if (debounce(&textile_1_from3_debounce, sequence_1_from3_cond)) {
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_1_from3_debounce);
     }
 
+    // From textile 4 chain: 4C → 3D → 2D → 1B
     bool sequence_1_from4_cond = (textile_1_current_sequence == IDLE &&
                                   textile_2_current_sequence == FINISHED &&
                                   textile_3_current_sequence == FINISHED &&
                                   textile_4_current_sequence == FINISHED &&
-                                  textile_4_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 4
+                                  (textile_4_trigger_type == SINGLE ||
+                                   (textile_4_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE &&
+                                    textile_2_trigger_type != DOUBLE && textile_3_trigger_type != DOUBLE)));
     if (debounce(&textile_1_from4_debounce, sequence_1_from4_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_1_from4_debounce);
     }
 
+    // From triple (2+3+4): device 1 is the 4th, plays P after others finish
+    bool sequence_1_from_triple_cond = (textile_1_current_sequence == IDLE &&
+                                        textile_2_current_sequence == FINISHED &&
+                                        textile_3_current_sequence == FINISHED &&
+                                        textile_4_current_sequence == FINISHED &&
+                                        textile_2_trigger_type == TRIPLE &&
+                                        textile_3_trigger_type == TRIPLE &&
+                                        textile_4_trigger_type == TRIPLE);
+    if (debounce(&textile_1_from_triple_debounce, sequence_1_from_triple_cond)) {
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_1_from_triple_debounce);
+    }
+
+    // All finished → reset (device 1 is never DOUBLE secondary)
     bool sequence_1_all_finished = (textile_1_current_sequence == FINISHED &&
                                     textile_2_current_sequence == FINISHED &&
                                     textile_3_current_sequence == FINISHED &&
-                                    textile_4_current_sequence == FINISHED); // EVERY ONE IS FINISHED RETURN TO IDLE
+                                    textile_4_current_sequence == FINISHED);
     if (debounce(&textile_1_finished_debounce, sequence_1_all_finished)) {
         update_trigger(NOT_TRIGGERED);
         update_sequence(IDLE);
@@ -761,12 +809,12 @@ void textile_1_loop(void){
                 setPin(sequence_1_A[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0 , (duration/2), sequence_1_A[i].value_starts_at, sequence_1_A[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_A[i].value_starts_at, sequence_1_A[i].value_ends_at);
                     setPin(sequence_1_A[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_A[i].value_starts_at, sequence_1_A[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_A[i].value_ends_at, sequence_1_A[i].value_starts_at);
                     setPin(sequence_1_A[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -794,12 +842,12 @@ void textile_1_loop(void){
                 setPin(sequence_1_B[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0 , (duration/2), sequence_1_B[i].value_starts_at, sequence_1_B[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_B[i].value_starts_at, sequence_1_B[i].value_ends_at);
                     setPin(sequence_1_B[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point; 
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_B[i].value_starts_at, sequence_1_B[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_B[i].value_ends_at, sequence_1_B[i].value_starts_at);
                     setPin(sequence_1_B[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -827,12 +875,12 @@ void textile_1_loop(void){
                 setPin(sequence_1_C[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer; 
-                    uint8_t mapped_value = map(duration_left, 0 , (duration/2), sequence_1_C[i].value_starts_at, sequence_1_C[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_C[i].value_starts_at, sequence_1_C[i].value_ends_at);
                     setPin(sequence_1_C[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_C[i].value_starts_at, sequence_1_C[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_C[i].value_ends_at, sequence_1_C[i].value_starts_at);
                     setPin(sequence_1_C[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -860,12 +908,12 @@ void textile_1_loop(void){
                 setPin(sequence_1_D[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_D[i].value_starts_at, sequence_1_D[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_D[i].value_starts_at, sequence_1_D[i].value_ends_at);
                     setPin(sequence_1_D[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_D[i].value_starts_at, sequence_1_D[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_D[i].value_ends_at, sequence_1_D[i].value_starts_at);
                     setPin(sequence_1_D[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -893,12 +941,12 @@ void textile_1_loop(void){
                 setPin(sequence_1_P[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_P[i].value_starts_at, sequence_1_P[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_P[i].value_starts_at, sequence_1_P[i].value_ends_at);
                     setPin(sequence_1_P[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_P[i].value_starts_at, sequence_1_P[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_1_P[i].value_ends_at, sequence_1_P[i].value_starts_at);
                     setPin(sequence_1_P[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -910,7 +958,12 @@ void textile_1_loop(void){
                 setPin(sequence_1_P[i].led_index.positive_pin, 0);
                 setPin(sequence_1_P[i].led_index.negative_pin, 0);
             }
-            update_sequence(FINISHED);
+            if (textile_1_trigger_type == DOUBLE) {
+                update_trigger(NOT_TRIGGERED);
+                update_sequence(IDLE);
+            } else {
+                update_sequence(FINISHED);
+            }
         }
     }
 
@@ -918,65 +971,130 @@ void textile_1_loop(void){
 
 
 void textile_2_loop(void){
-    static debounce_timer_st textile_2_single_debounce   = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_2_from1_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_2_from3_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_2_from4_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_2_finished_debounce = {0, false, DEBOUNCE_TIMER};
+    // Initialize debounce timers
+    static debounce_timer_st textile_2_single_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_double_pri_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_double_sec_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_triple_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_four_debounce        = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_from1_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_from3_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_from4_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_from_triple_debounce = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_finished_debounce    = {0, false, DEBOUNCE_TIMER};
 
-    bool sequence_2_single_cond = (textile_1_current_sequence == IDLE &&
-                                   textile_2_current_sequence == IDLE &&
-                                   textile_3_current_sequence == IDLE &&
-                                   textile_4_current_sequence == IDLE &&
-                                   textile_1_presence == 0 &&
-                                   textile_2_presence != 0 &&
-                                   textile_3_presence == 0 &&
-                                   textile_4_presence == 0); // STARTS SEQUENCE AT TEXT 2 SINGLE
+    bool all_idle = (textile_1_current_sequence == IDLE &&
+                     textile_2_current_sequence == IDLE &&
+                     textile_3_current_sequence == IDLE &&
+                     textile_4_current_sequence == IDLE);
+
+    uint8_t active_count = (textile_1_presence != 0) + (textile_2_presence != 0) +
+                           (textile_3_presence != 0) + (textile_4_presence != 0);
+
+    // Single: only device 2 present → 2B
+    bool sequence_2_single_cond = (all_idle && textile_2_presence != 0 && active_count == 1);
     if (debounce(&textile_2_single_debounce, sequence_2_single_cond)) {
-        uint32_t tmp = SINGLE;
-        write_data_table(TAG_TEXTILE_2_TRIGGER_TYPE, &tmp, sizeof(tmp));
+        update_trigger(SINGLE);
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_2_single_debounce);
     }
 
+    // Double primary: device 2 + higher device only (no device 1) → 2B
+    bool sequence_2_double_pri = (all_idle && textile_2_presence != 0 &&
+                                  textile_1_presence == 0 && active_count == 2);
+    if (debounce(&textile_2_double_pri_debounce, sequence_2_double_pri)) {
+        update_trigger(DOUBLE);
+        update_sequence(SEQUENCE_B);
+        clear_debounce(&textile_2_double_pri_debounce);
+    }
+
+    // Double secondary: device 2 + device 1 (lower present) → just set trigger, wait
+    bool sequence_2_double_sec = (all_idle && textile_2_presence != 0 &&
+                                  textile_1_presence != 0 && active_count == 2);
+    if (debounce(&textile_2_double_sec_debounce, sequence_2_double_sec)) {
+        update_trigger(DOUBLE);
+        clear_debounce(&textile_2_double_sec_debounce);
+    }
+
+    // Triple: device 2 + two others → 2P immediately
+    bool sequence_2_triple_cond = (all_idle && textile_2_presence != 0 && active_count == 3);
+    if (debounce(&textile_2_triple_debounce, sequence_2_triple_cond)) {
+        update_trigger(TRIPLE);
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_2_triple_debounce);
+    }
+
+    // Four: all devices → 2P immediately
+    bool sequence_2_four_cond = (all_idle && textile_2_presence != 0 && active_count == 4);
+    if (debounce(&textile_2_four_debounce, sequence_2_four_cond)) {
+        update_trigger(FOUR);
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_2_four_debounce);
+    }
+
+    // From textile 1 chain: 1D → 2A
     bool sequence_2_from1_cond = (textile_1_current_sequence == FINISHED &&
                                   textile_2_current_sequence == IDLE &&
                                   textile_3_current_sequence == IDLE &&
                                   textile_4_current_sequence == IDLE &&
-                                  textile_1_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 1
+                                  (textile_1_trigger_type == SINGLE || textile_1_trigger_type == DOUBLE));
     if (debounce(&textile_2_from1_debounce, sequence_2_from1_cond)) {
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_2_from1_debounce);
     }
 
+    // From textile 3 chain: 3A → 1A → 4E → 2E
     bool sequence_2_from3_cond = (textile_1_current_sequence == FINISHED &&
-                                  textile_2_current_sequence == FINISHED &&
-                                  textile_3_current_sequence == IDLE &&
+                                  textile_2_current_sequence == IDLE &&
+                                  textile_3_current_sequence == FINISHED &&
                                   textile_4_current_sequence == FINISHED &&
-                                  textile_3_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 3
+                                  (textile_3_trigger_type == SINGLE ||
+                                   (textile_3_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE &&
+                                    textile_2_trigger_type != DOUBLE)));
     if (debounce(&textile_2_from3_debounce, sequence_2_from3_cond)) {
         update_sequence(SEQUENCE_E);
         clear_debounce(&textile_2_from3_debounce);
     }
 
+    // From textile 4 chain: 4C → 3D → 2D
     bool sequence_2_from4_cond = (textile_1_current_sequence == IDLE &&
                                   textile_2_current_sequence == IDLE &&
                                   textile_3_current_sequence == FINISHED &&
                                   textile_4_current_sequence == FINISHED &&
-                                  textile_4_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 4
+                                  (textile_4_trigger_type == SINGLE ||
+                                   (textile_4_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE &&
+                                    textile_2_trigger_type != DOUBLE && textile_3_trigger_type != DOUBLE)));
     if (debounce(&textile_2_from4_debounce, sequence_2_from4_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_2_from4_debounce);
     }
 
+    // From triple (1+3+4): device 2 is the 4th, plays P after others finish
+    bool sequence_2_from_triple_cond = (textile_2_current_sequence == IDLE &&
+                                        textile_1_current_sequence == FINISHED &&
+                                        textile_3_current_sequence == FINISHED &&
+                                        textile_4_current_sequence == FINISHED &&
+                                        textile_1_trigger_type == TRIPLE &&
+                                        textile_3_trigger_type == TRIPLE &&
+                                        textile_4_trigger_type == TRIPLE);
+    if (debounce(&textile_2_from_triple_debounce, sequence_2_from_triple_cond)) {
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_2_from_triple_debounce);
+    }
+
+    // All finished
     bool sequence_2_all_finished = (textile_1_current_sequence == FINISHED &&
                                     textile_2_current_sequence == FINISHED &&
                                     textile_3_current_sequence == FINISHED &&
-                                    textile_4_current_sequence == FINISHED); // EVERY ONE IS FINISHED RETURN TO IDLE
+                                    textile_4_current_sequence == FINISHED);
     if (debounce(&textile_2_finished_debounce, sequence_2_all_finished)) {
-        uint32_t tmp = NOT_TRIGGERED;
-        write_data_table(TAG_TEXTILE_2_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        update_sequence(IDLE);
+        // Check if device 2 is DOUBLE secondary (paired with device 1)
+        if (textile_2_trigger_type == DOUBLE && textile_1_trigger_type == DOUBLE) {
+            update_sequence(SEQUENCE_P);
+        } else {
+            update_trigger(NOT_TRIGGERED);
+            update_sequence(IDLE);
+        }
         clear_debounce(&textile_2_finished_debounce);
     }
 
@@ -992,12 +1110,12 @@ void textile_2_loop(void){
                 setPin(sequence_2_A[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_A[i].value_starts_at, sequence_2_A[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_A[i].value_starts_at, sequence_2_A[i].value_ends_at);
                     setPin(sequence_2_A[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_A[i].value_starts_at, sequence_2_A[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_A[i].value_ends_at, sequence_2_A[i].value_starts_at);
                     setPin(sequence_2_A[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1025,12 +1143,12 @@ void textile_2_loop(void){
                 setPin(sequence_2_B[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_B[i].value_starts_at, sequence_2_B[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_B[i].value_starts_at, sequence_2_B[i].value_ends_at);
                     setPin(sequence_2_B[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_B[i].value_starts_at, sequence_2_B[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_B[i].value_ends_at, sequence_2_B[i].value_starts_at);
                     setPin(sequence_2_B[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1058,12 +1176,12 @@ void textile_2_loop(void){
                 setPin(sequence_2_C[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_C[i].value_starts_at, sequence_2_C[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_C[i].value_starts_at, sequence_2_C[i].value_ends_at);
                     setPin(sequence_2_C[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_C[i].value_starts_at, sequence_2_C[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_C[i].value_ends_at, sequence_2_C[i].value_starts_at);
                     setPin(sequence_2_C[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1091,12 +1209,12 @@ void textile_2_loop(void){
                 setPin(sequence_2_D[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_D[i].value_starts_at, sequence_2_D[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_D[i].value_starts_at, sequence_2_D[i].value_ends_at);
                     setPin(sequence_2_D[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_D[i].value_starts_at, sequence_2_D[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_D[i].value_ends_at, sequence_2_D[i].value_starts_at);
                     setPin(sequence_2_D[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1107,6 +1225,39 @@ void textile_2_loop(void){
             {
                 setPin(sequence_2_D[i].led_index.positive_pin, 0);
                 setPin(sequence_2_D[i].led_index.negative_pin, 0);
+            }
+            update_sequence(FINISHED);
+        }
+    }
+
+    if( textile_2_current_sequence == SEQUENCE_E ){
+        uint32_t current_timer = millis() - internal_sequence_timer;
+        for (uint16_t i = 0 ; i < sequence_2_E_size ; i++)
+        {
+            if((current_timer >= sequence_2_E[i].time_starts_at) &&
+               (current_timer <= sequence_2_E[i].time_ends_at))
+            {
+                uint32_t duration = (sequence_2_E[i].time_ends_at - sequence_2_E[i].time_starts_at);
+                uint32_t middle_point = (sequence_2_E[i].time_starts_at + (duration/2));
+                setPin(sequence_2_E[i].led_index.positive_pin, 255);
+                if(current_timer <= middle_point){
+                    uint32_t duration_left = middle_point - current_timer;
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_E[i].value_starts_at, sequence_2_E[i].value_ends_at);
+                    setPin(sequence_2_E[i].led_index.negative_pin, mapped_value);
+                }
+                if(current_timer > middle_point){
+                    uint32_t duration_left = current_timer - middle_point;
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_E[i].value_ends_at, sequence_2_E[i].value_starts_at);
+                    setPin(sequence_2_E[i].led_index.negative_pin, mapped_value);
+                }
+            }
+        }
+        if(current_timer > sequence_2_E[sequence_2_E_size - 1].time_ends_at)
+        {
+            for (uint16_t i = 0 ; i < sequence_2_E_size ; i++)
+            {
+                setPin(sequence_2_E[i].led_index.positive_pin, 0);
+                setPin(sequence_2_E[i].led_index.negative_pin, 0);
             }
             update_sequence(FINISHED);
         }
@@ -1124,12 +1275,12 @@ void textile_2_loop(void){
                 setPin(sequence_2_P[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_P[i].value_starts_at, sequence_2_P[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_P[i].value_starts_at, sequence_2_P[i].value_ends_at);
                     setPin(sequence_2_P[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_2_P[i].value_starts_at, sequence_2_P[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_2_P[i].value_ends_at, sequence_2_P[i].value_starts_at);
                     setPin(sequence_2_P[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1141,7 +1292,12 @@ void textile_2_loop(void){
                 setPin(sequence_2_P[i].led_index.positive_pin, 0);
                 setPin(sequence_2_P[i].led_index.negative_pin, 0);
             }
-            update_sequence(FINISHED);
+            if (textile_2_trigger_type == DOUBLE) {
+                update_trigger(NOT_TRIGGERED);
+                update_sequence(IDLE);
+            } else {
+                update_sequence(FINISHED);
+            }
         }
     }
 
@@ -1149,65 +1305,130 @@ void textile_2_loop(void){
 
 
 void textile_3_loop(void){
-    static debounce_timer_st textile_3_single_debounce   = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_3_from1_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_3_from2_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_3_from4_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_3_finished_debounce = {0, false, DEBOUNCE_TIMER};
+    // Initialize debounce timers
+    static debounce_timer_st textile_3_single_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_double_pri_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_double_sec_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_triple_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_four_debounce        = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_from1_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_from2_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_from4_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_from_triple_debounce = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_finished_debounce    = {0, false, DEBOUNCE_TIMER};
 
-    bool sequence_3_single_cond = (textile_1_current_sequence == IDLE &&
-                                   textile_2_current_sequence == IDLE &&
-                                   textile_3_current_sequence == IDLE &&
-                                   textile_4_current_sequence == IDLE &&
-                                   textile_1_presence == 0 &&
-                                   textile_2_presence == 0 &&
-                                   textile_3_presence != 0 &&
-                                   textile_4_presence == 0); // STARTS SEQUENCE AT TEXT 3 SINGLE
+    bool all_idle = (textile_1_current_sequence == IDLE &&
+                     textile_2_current_sequence == IDLE &&
+                     textile_3_current_sequence == IDLE &&
+                     textile_4_current_sequence == IDLE);
+
+    uint8_t active_count = (textile_1_presence != 0) + (textile_2_presence != 0) +
+                           (textile_3_presence != 0) + (textile_4_presence != 0);
+
+    // Single: only device 3 present → 3A
+    bool sequence_3_single_cond = (all_idle && textile_3_presence != 0 && active_count == 1);
     if (debounce(&textile_3_single_debounce, sequence_3_single_cond)) {
-        uint32_t tmp = SINGLE;
-        write_data_table(TAG_TEXTILE_3_TRIGGER_TYPE, &tmp, sizeof(tmp));
+        update_trigger(SINGLE);
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_3_single_debounce);
     }
 
+    // Double primary: device 3 + device 4 only (no device 1 or 2) → 3A
+    bool sequence_3_double_pri = (all_idle && textile_3_presence != 0 &&
+                                  textile_1_presence == 0 && textile_2_presence == 0 && active_count == 2);
+    if (debounce(&textile_3_double_pri_debounce, sequence_3_double_pri)) {
+        update_trigger(DOUBLE);
+        update_sequence(SEQUENCE_A);
+        clear_debounce(&textile_3_double_pri_debounce);
+    }
+
+    // Double secondary: device 3 + lower device (1 or 2) → just set trigger, wait
+    bool sequence_3_double_sec = (all_idle && textile_3_presence != 0 &&
+                                  (textile_1_presence != 0 || textile_2_presence != 0) && active_count == 2);
+    if (debounce(&textile_3_double_sec_debounce, sequence_3_double_sec)) {
+        update_trigger(DOUBLE);
+        clear_debounce(&textile_3_double_sec_debounce);
+    }
+
+    // Triple: device 3 + two others → 3P immediately
+    bool sequence_3_triple_cond = (all_idle && textile_3_presence != 0 && active_count == 3);
+    if (debounce(&textile_3_triple_debounce, sequence_3_triple_cond)) {
+        update_trigger(TRIPLE);
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_3_triple_debounce);
+    }
+
+    // Four: all devices → 3P immediately
+    bool sequence_3_four_cond = (all_idle && textile_3_presence != 0 && active_count == 4);
+    if (debounce(&textile_3_four_debounce, sequence_3_four_cond)) {
+        update_trigger(FOUR);
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_3_four_debounce);
+    }
+
+    // From textile 1 chain: 1D → 2A → 3B
     bool sequence_3_from1_cond = (textile_1_current_sequence == FINISHED &&
                                   textile_2_current_sequence == FINISHED &&
                                   textile_3_current_sequence == IDLE &&
                                   textile_4_current_sequence == IDLE &&
-                                  textile_1_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 1
+                                  (textile_1_trigger_type == SINGLE || textile_1_trigger_type == DOUBLE));
     if (debounce(&textile_3_from1_debounce, sequence_3_from1_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_3_from1_debounce);
     }
 
-    bool sequence_3_from2_cond = (textile_1_current_sequence == FINISHED &&
-                                  textile_2_current_sequence == IDLE &&
+    // From textile 2 chain: 2B → 3C
+    bool sequence_3_from2_cond = (textile_1_current_sequence == IDLE &&
+                                  textile_2_current_sequence == FINISHED &&
                                   textile_3_current_sequence == IDLE &&
                                   textile_4_current_sequence == IDLE &&
-                                  textile_2_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 2
+                                  (textile_2_trigger_type == SINGLE ||
+                                   (textile_2_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE)));
     if (debounce(&textile_3_from2_debounce, sequence_3_from2_cond)) {
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_3_from2_debounce);
     }
 
+    // From textile 4 chain: 4C → 3D
     bool sequence_3_from4_cond = (textile_1_current_sequence == IDLE &&
                                   textile_2_current_sequence == IDLE &&
                                   textile_3_current_sequence == IDLE &&
                                   textile_4_current_sequence == FINISHED &&
-                                  textile_4_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 4
+                                  (textile_4_trigger_type == SINGLE ||
+                                   (textile_4_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE &&
+                                    textile_2_trigger_type != DOUBLE && textile_3_trigger_type != DOUBLE)));
     if (debounce(&textile_3_from4_debounce, sequence_3_from4_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_3_from4_debounce);
     }
 
+    // From triple (1+2+4): device 3 is the 4th, plays P after others finish
+    bool sequence_3_from_triple_cond = (textile_3_current_sequence == IDLE &&
+                                        textile_1_current_sequence == FINISHED &&
+                                        textile_2_current_sequence == FINISHED &&
+                                        textile_4_current_sequence == FINISHED &&
+                                        textile_1_trigger_type == TRIPLE &&
+                                        textile_2_trigger_type == TRIPLE &&
+                                        textile_4_trigger_type == TRIPLE);
+    if (debounce(&textile_3_from_triple_debounce, sequence_3_from_triple_cond)) {
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_3_from_triple_debounce);
+    }
+
+    // All finished
     bool sequence_3_all_finished = (textile_1_current_sequence == FINISHED &&
                                     textile_2_current_sequence == FINISHED &&
                                     textile_3_current_sequence == FINISHED &&
-                                    textile_4_current_sequence == FINISHED); // EVERY ONE IS FINISHED RETURN TO IDLE
+                                    textile_4_current_sequence == FINISHED);
     if (debounce(&textile_3_finished_debounce, sequence_3_all_finished)) {
-        uint32_t tmp = NOT_TRIGGERED;
-        write_data_table(TAG_TEXTILE_3_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        update_sequence(IDLE);
+        // Check if device 3 is DOUBLE secondary (paired with device 1 or 2)
+        if (textile_3_trigger_type == DOUBLE &&
+            (textile_1_trigger_type == DOUBLE || textile_2_trigger_type == DOUBLE)) {
+            update_sequence(SEQUENCE_P);
+        } else {
+            update_trigger(NOT_TRIGGERED);
+            update_sequence(IDLE);
+        }
         clear_debounce(&textile_3_finished_debounce);
     }
 
@@ -1223,12 +1444,12 @@ void textile_3_loop(void){
                 setPin(sequence_3_A[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_A[i].value_starts_at, sequence_3_A[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_A[i].value_starts_at, sequence_3_A[i].value_ends_at);
                     setPin(sequence_3_A[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_A[i].value_starts_at, sequence_3_A[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_A[i].value_ends_at, sequence_3_A[i].value_starts_at);
                     setPin(sequence_3_A[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1256,12 +1477,12 @@ void textile_3_loop(void){
                 setPin(sequence_3_B[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_B[i].value_starts_at, sequence_3_B[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_B[i].value_starts_at, sequence_3_B[i].value_ends_at);
                     setPin(sequence_3_B[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_B[i].value_starts_at, sequence_3_B[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_B[i].value_ends_at, sequence_3_B[i].value_starts_at);
                     setPin(sequence_3_B[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1289,12 +1510,12 @@ void textile_3_loop(void){
                 setPin(sequence_3_C[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_C[i].value_starts_at, sequence_3_C[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_C[i].value_starts_at, sequence_3_C[i].value_ends_at);
                     setPin(sequence_3_C[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_C[i].value_starts_at, sequence_3_C[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_C[i].value_ends_at, sequence_3_C[i].value_starts_at);
                     setPin(sequence_3_C[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1322,12 +1543,12 @@ void textile_3_loop(void){
                 setPin(sequence_3_D[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_D[i].value_starts_at, sequence_3_D[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_D[i].value_starts_at, sequence_3_D[i].value_ends_at);
                     setPin(sequence_3_D[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_D[i].value_starts_at, sequence_3_D[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_D[i].value_ends_at, sequence_3_D[i].value_starts_at);
                     setPin(sequence_3_D[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1355,12 +1576,12 @@ void textile_3_loop(void){
                 setPin(sequence_3_P[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_P[i].value_starts_at, sequence_3_P[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_P[i].value_starts_at, sequence_3_P[i].value_ends_at);
                     setPin(sequence_3_P[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_3_P[i].value_starts_at, sequence_3_P[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_3_P[i].value_ends_at, sequence_3_P[i].value_starts_at);
                     setPin(sequence_3_P[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1372,7 +1593,12 @@ void textile_3_loop(void){
                 setPin(sequence_3_P[i].led_index.positive_pin, 0);
                 setPin(sequence_3_P[i].led_index.negative_pin, 0);
             }
-            update_sequence(FINISHED);
+            if (textile_3_trigger_type == DOUBLE) {
+                update_trigger(NOT_TRIGGERED);
+                update_sequence(IDLE);
+            } else {
+                update_sequence(FINISHED);
+            }
         }
     }
 
@@ -1380,65 +1606,120 @@ void textile_3_loop(void){
 
 
 void textile_4_loop(void){
-    static debounce_timer_st textile_4_single_debounce   = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_4_from1_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_4_from2_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_4_from3_debounce    = {0, false, DEBOUNCE_TIMER};
-    static debounce_timer_st textile_4_finished_debounce = {0, false, DEBOUNCE_TIMER};
+    // Initialize debounce timers
+    static debounce_timer_st textile_4_single_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_double_sec_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_triple_debounce      = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_four_debounce        = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_from1_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_from2_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_from3_debounce       = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_from_triple_debounce = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_finished_debounce    = {0, false, DEBOUNCE_TIMER};
 
-    bool sequence_4_single_cond = (textile_1_current_sequence == IDLE &&
-                                   textile_2_current_sequence == IDLE &&
-                                   textile_3_current_sequence == IDLE &&
-                                   textile_4_current_sequence == IDLE &&
-                                   textile_1_presence == 0 &&
-                                   textile_2_presence == 0 &&
-                                   textile_3_presence == 0 &&
-                                   textile_4_presence != 0); // STARTS SEQUENCE AT TEXT 4 SINGLE
+    bool all_idle = (textile_1_current_sequence == IDLE &&
+                     textile_2_current_sequence == IDLE &&
+                     textile_3_current_sequence == IDLE &&
+                     textile_4_current_sequence == IDLE);
+
+    uint8_t active_count = (textile_1_presence != 0) + (textile_2_presence != 0) +
+                           (textile_3_presence != 0) + (textile_4_presence != 0);
+
+    // Single: only device 4 present → 4C
+    bool sequence_4_single_cond = (all_idle && textile_4_presence != 0 && active_count == 1);
     if (debounce(&textile_4_single_debounce, sequence_4_single_cond)) {
-        uint32_t tmp = SINGLE;
-        write_data_table(TAG_TEXTILE_4_TRIGGER_TYPE, &tmp, sizeof(tmp));
+        update_trigger(SINGLE);
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_4_single_debounce);
     }
 
+    // Double secondary: device 4 is always secondary (highest number) → just set trigger, wait
+    bool sequence_4_double_sec = (all_idle && textile_4_presence != 0 && active_count == 2);
+    if (debounce(&textile_4_double_sec_debounce, sequence_4_double_sec)) {
+        update_trigger(DOUBLE);
+        clear_debounce(&textile_4_double_sec_debounce);
+    }
+
+    // Triple: device 4 + two others → 4P immediately
+    bool sequence_4_triple_cond = (all_idle && textile_4_presence != 0 && active_count == 3);
+    if (debounce(&textile_4_triple_debounce, sequence_4_triple_cond)) {
+        update_trigger(TRIPLE);
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_4_triple_debounce);
+    }
+
+    // Four: all devices → 4P immediately
+    bool sequence_4_four_cond = (all_idle && textile_4_presence != 0 && active_count == 4);
+    if (debounce(&textile_4_four_debounce, sequence_4_four_cond)) {
+        update_trigger(FOUR);
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_4_four_debounce);
+    }
+
+    // From textile 1 chain: 1D → 2A → 3B → 4B
     bool sequence_4_from1_cond = (textile_1_current_sequence == FINISHED &&
                                   textile_2_current_sequence == FINISHED &&
                                   textile_3_current_sequence == FINISHED &&
                                   textile_4_current_sequence == IDLE &&
-                                  textile_1_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 1
+                                  (textile_1_trigger_type == SINGLE || textile_1_trigger_type == DOUBLE));
     if (debounce(&textile_4_from1_debounce, sequence_4_from1_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_4_from1_debounce);
     }
 
+    // From textile 2 chain: 2B → 3C → 4D
     bool sequence_4_from2_cond = (textile_1_current_sequence == IDLE &&
                                   textile_2_current_sequence == FINISHED &&
                                   textile_3_current_sequence == FINISHED &&
                                   textile_4_current_sequence == IDLE &&
-                                  textile_2_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 2
+                                  (textile_2_trigger_type == SINGLE ||
+                                   (textile_2_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE)));
     if (debounce(&textile_4_from2_debounce, sequence_4_from2_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_4_from2_debounce);
     }
 
+    // From textile 3 chain: 3A → 1A → 4E
     bool sequence_4_from3_cond = (textile_1_current_sequence == FINISHED &&
                                   textile_2_current_sequence == IDLE &&
                                   textile_3_current_sequence == FINISHED &&
                                   textile_4_current_sequence == IDLE &&
-                                  textile_3_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 3
+                                  (textile_3_trigger_type == SINGLE ||
+                                   (textile_3_trigger_type == DOUBLE && textile_1_trigger_type != DOUBLE &&
+                                    textile_2_trigger_type != DOUBLE)));
     if (debounce(&textile_4_from3_debounce, sequence_4_from3_cond)) {
         update_sequence(SEQUENCE_E);
         clear_debounce(&textile_4_from3_debounce);
     }
 
+    // From triple (1+2+3): device 4 is the 4th, plays P after others finish
+    bool sequence_4_from_triple_cond = (textile_4_current_sequence == IDLE &&
+                                        textile_1_current_sequence == FINISHED &&
+                                        textile_2_current_sequence == FINISHED &&
+                                        textile_3_current_sequence == FINISHED &&
+                                        textile_1_trigger_type == TRIPLE &&
+                                        textile_2_trigger_type == TRIPLE &&
+                                        textile_3_trigger_type == TRIPLE);
+    if (debounce(&textile_4_from_triple_debounce, sequence_4_from_triple_cond)) {
+        update_sequence(SEQUENCE_P);
+        clear_debounce(&textile_4_from_triple_debounce);
+    }
+
+    // All finished
     bool sequence_4_all_finished = (textile_1_current_sequence == FINISHED &&
                                     textile_2_current_sequence == FINISHED &&
                                     textile_3_current_sequence == FINISHED &&
-                                    textile_4_current_sequence == FINISHED); // EVERY ONE IS FINISHED RETURN TO IDLE
+                                    textile_4_current_sequence == FINISHED);
     if (debounce(&textile_4_finished_debounce, sequence_4_all_finished)) {
-        uint32_t tmp = NOT_TRIGGERED;
-        write_data_table(TAG_TEXTILE_4_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        update_sequence(IDLE);
+        // Check if device 4 is DOUBLE secondary (paired with any lower device)
+        if (textile_4_trigger_type == DOUBLE &&
+            (textile_1_trigger_type == DOUBLE || textile_2_trigger_type == DOUBLE ||
+             textile_3_trigger_type == DOUBLE)) {
+            update_sequence(SEQUENCE_P);
+        } else {
+            update_trigger(NOT_TRIGGERED);
+            update_sequence(IDLE);
+        }
         clear_debounce(&textile_4_finished_debounce);
     }
 
@@ -1454,12 +1735,12 @@ void textile_4_loop(void){
                 setPin(sequence_4_A[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_A[i].value_starts_at, sequence_4_A[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_A[i].value_starts_at, sequence_4_A[i].value_ends_at);
                     setPin(sequence_4_A[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_A[i].value_starts_at, sequence_4_A[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_A[i].value_ends_at, sequence_4_A[i].value_starts_at);
                     setPin(sequence_4_A[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1487,12 +1768,12 @@ void textile_4_loop(void){
                 setPin(sequence_4_B[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_B[i].value_starts_at, sequence_4_B[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_B[i].value_starts_at, sequence_4_B[i].value_ends_at);
                     setPin(sequence_4_B[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_B[i].value_starts_at, sequence_4_B[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_B[i].value_ends_at, sequence_4_B[i].value_starts_at);
                     setPin(sequence_4_B[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1520,12 +1801,12 @@ void textile_4_loop(void){
                 setPin(sequence_4_C[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_C[i].value_starts_at, sequence_4_C[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_C[i].value_starts_at, sequence_4_C[i].value_ends_at);
                     setPin(sequence_4_C[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_C[i].value_starts_at, sequence_4_C[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_C[i].value_ends_at, sequence_4_C[i].value_starts_at);
                     setPin(sequence_4_C[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1553,12 +1834,12 @@ void textile_4_loop(void){
                 setPin(sequence_4_D[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_D[i].value_starts_at, sequence_4_D[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_D[i].value_starts_at, sequence_4_D[i].value_ends_at);
                     setPin(sequence_4_D[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_D[i].value_starts_at, sequence_4_D[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_D[i].value_ends_at, sequence_4_D[i].value_starts_at);
                     setPin(sequence_4_D[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1586,12 +1867,12 @@ void textile_4_loop(void){
                 setPin(sequence_4_E[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_E[i].value_starts_at, sequence_4_E[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_E[i].value_starts_at, sequence_4_E[i].value_ends_at);
                     setPin(sequence_4_E[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_E[i].value_starts_at, sequence_4_E[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_E[i].value_ends_at, sequence_4_E[i].value_starts_at);
                     setPin(sequence_4_E[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1619,12 +1900,12 @@ void textile_4_loop(void){
                 setPin(sequence_4_P[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
-                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_P[i].value_starts_at, sequence_4_P[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_P[i].value_starts_at, sequence_4_P[i].value_ends_at);
                     setPin(sequence_4_P[i].led_index.negative_pin, mapped_value);
                 }
                 if(current_timer > middle_point){
                     uint32_t duration_left = current_timer - middle_point;
-                    uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_4_P[i].value_starts_at, sequence_4_P[i].value_ends_at);
+                    uint8_t mapped_value = map(duration_left, 0, (duration/2), sequence_4_P[i].value_ends_at, sequence_4_P[i].value_starts_at);
                     setPin(sequence_4_P[i].led_index.negative_pin, mapped_value);
                 }
             }
@@ -1636,10 +1917,9 @@ void textile_4_loop(void){
                 setPin(sequence_4_P[i].led_index.positive_pin, 0);
                 setPin(sequence_4_P[i].led_index.negative_pin, 0);
             }
-            update_sequence(FINISHED);
-        }
-    }
-
-}
-
-
+            if (textile_4_trigger_type == DOUBLE) {
+                update_trigger(NOT_TRIGGERED);
+                update_sequence(IDLE);
+            } else {
+                update_sequence(FINISHED);
+            }
