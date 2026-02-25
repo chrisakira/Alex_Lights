@@ -11,7 +11,7 @@ extern "C" {
 }
 #define MIN_VALUE 0
 #define MAX_VALUE 255
-
+#define DEBOUNCE_TIMER 500
 
 enum sequences_s{
     NOT_CONNECTED = 0,
@@ -48,6 +48,13 @@ typedef struct sequence_commands_e{
     uint8_t value_starts_at;
     uint8_t value_ends_at;
 } sequence_commands_st;
+
+
+typedef struct {
+    unsigned long start_time;
+    bool condition_met;
+    const unsigned long debounce_time;
+} debounce_timer_st;
 
 
 uint8_t active_sequence = IDLE; 
@@ -489,6 +496,30 @@ static uint32_t textile_2_trigger_type = 0;
 static uint32_t textile_3_trigger_type = 0;
 static uint32_t textile_4_trigger_type = 0;
 
+static bool inline debounce(debounce_timer_st* timer, bool condition) {
+    uint32_t millis_timer = millis();
+    if (condition) {
+        if (!timer->condition_met) {
+            timer->start_time = millis_timer;
+            timer->condition_met = true;
+        }
+        
+        if (millis_timer - timer->start_time >= timer->debounce_time) {
+            return true;
+        }
+    } else {
+        timer->condition_met = false;
+        timer->start_time = 0;
+    }
+    
+    return false;
+}
+
+void clear_debounce(debounce_timer_st* timer) {
+    timer->start_time = 0;
+    timer->condition_met = false;
+}
+
 void update_datatable_data(void){
     get_data_table(TAG_TEXTILE_1_PRESENCE_DETECTED, &textile_1_presence, sizeof(textile_1_presence));
     get_data_table(TAG_TEXTILE_2_PRESENCE_DETECTED, &textile_2_presence, sizeof(textile_2_presence));
@@ -654,54 +685,68 @@ void loop_sequence(uint8_t debug_info = 0){
 }
 
 void textile_1_loop(void){
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == IDLE && 
-        textile_1_presence != 0 && 
-        textile_2_presence == 0 &&
-        textile_3_presence == 0 &&
-        textile_4_presence == 0 ) // STARTS SEQUENCE AT TEXT 1 SINGLE
-    {
+    
+    // Initialize debounce timer (add near other static variables)
+    static debounce_timer_st textile_1_single_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_from2_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_from3_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_from4_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_1_finished_debounce = {0, false, DEBOUNCE_TIMER};
+
+    bool sequence_1_D_single =  (textile_1_current_sequence == IDLE &&
+                                 textile_2_current_sequence == IDLE &&
+                                 textile_3_current_sequence == IDLE &&
+                                 textile_4_current_sequence == IDLE && 
+                                 textile_1_presence != 0 && 
+                                 textile_2_presence == 0 &&
+                                 textile_3_presence == 0 &&
+                                 textile_4_presence == 0);  //Starts at sequence 1 D
+
+    if (debounce(&textile_1_single_debounce, sequence_1_D_single)) {
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_D);
+        clear_debounce(&textile_1_single_debounce);
     }
 
 
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == FINISHED &&
-        textile_2_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 2
-    {
+    bool sequence_1_from2_cond = (textile_1_current_sequence == IDLE &&
+                                  textile_2_current_sequence == FINISHED &&
+                                  textile_3_current_sequence == FINISHED &&
+                                  textile_4_current_sequence == FINISHED &&
+                                  textile_2_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 2
+    if (debounce(&textile_1_from2_debounce, sequence_1_from2_cond)) {
         update_sequence(SEQUENCE_C);
+        clear_debounce(&textile_1_from2_debounce);
     }
-    
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == IDLE &&
-        textile_3_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 3
-    {
+
+    bool sequence_1_from3_cond = (textile_1_current_sequence == IDLE &&
+                                  textile_2_current_sequence == IDLE &&
+                                  textile_3_current_sequence == FINISHED &&
+                                  textile_4_current_sequence == IDLE &&
+                                  textile_3_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 3
+    if (debounce(&textile_1_from3_debounce, sequence_1_from3_cond)) {
         update_sequence(SEQUENCE_A);
+        clear_debounce(&textile_1_from3_debounce);
     }
 
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == FINISHED &&
-        textile_4_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 4
-    {
+    bool sequence_1_from4_cond = (textile_1_current_sequence == IDLE &&
+                                  textile_2_current_sequence == FINISHED &&
+                                  textile_3_current_sequence == FINISHED &&
+                                  textile_4_current_sequence == FINISHED &&
+                                  textile_4_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 4
+    if (debounce(&textile_1_from4_debounce, sequence_1_from4_cond)) {
         update_sequence(SEQUENCE_B);
+        clear_debounce(&textile_1_from4_debounce);
     }
 
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == FINISHED) // EVERY ONE IS FINISHED RETURN TO IDLE
-    {
+    bool sequence_1_all_finished = (textile_1_current_sequence == FINISHED &&
+                                    textile_2_current_sequence == FINISHED &&
+                                    textile_3_current_sequence == FINISHED &&
+                                    textile_4_current_sequence == FINISHED); // EVERY ONE IS FINISHED RETURN TO IDLE
+    if (debounce(&textile_1_finished_debounce, sequence_1_all_finished)) {
         update_trigger(NOT_TRIGGERED);
         update_sequence(IDLE);
+        clear_debounce(&textile_1_finished_debounce);
     }
 
     if( textile_1_current_sequence == SEQUENCE_A ){
@@ -873,58 +918,66 @@ void textile_1_loop(void){
 
 
 void textile_2_loop(void){
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == IDLE && 
-        textile_1_presence == 0 && 
-        textile_2_presence != 0 &&
-        textile_3_presence == 0 &&
-        textile_4_presence == 0 ) // STARTS SEQUENCE AT TEXT 2 SINGLE
-    {
+    static debounce_timer_st textile_2_single_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_from1_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_from3_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_from4_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_2_finished_debounce = {0, false, DEBOUNCE_TIMER};
+
+    bool sequence_2_single_cond = (textile_1_current_sequence == IDLE &&
+                                   textile_2_current_sequence == IDLE &&
+                                   textile_3_current_sequence == IDLE &&
+                                   textile_4_current_sequence == IDLE &&
+                                   textile_1_presence == 0 &&
+                                   textile_2_presence != 0 &&
+                                   textile_3_presence == 0 &&
+                                   textile_4_presence == 0); // STARTS SEQUENCE AT TEXT 2 SINGLE
+    if (debounce(&textile_2_single_debounce, sequence_2_single_cond)) {
         uint32_t tmp = SINGLE;
         write_data_table(TAG_TEXTILE_2_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        
         update_sequence(SEQUENCE_B);
+        clear_debounce(&textile_2_single_debounce);
     }
 
-
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == IDLE &&
-        textile_1_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 1
-    {
+    bool sequence_2_from1_cond = (textile_1_current_sequence == FINISHED &&
+                                  textile_2_current_sequence == IDLE &&
+                                  textile_3_current_sequence == IDLE &&
+                                  textile_4_current_sequence == IDLE &&
+                                  textile_1_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 1
+    if (debounce(&textile_2_from1_debounce, sequence_2_from1_cond)) {
         update_sequence(SEQUENCE_A);
+        clear_debounce(&textile_2_from1_debounce);
     }
-    
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == FINISHED &&
-        textile_3_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 3
-    {
+
+    bool sequence_2_from3_cond = (textile_1_current_sequence == FINISHED &&
+                                  textile_2_current_sequence == FINISHED &&
+                                  textile_3_current_sequence == IDLE &&
+                                  textile_4_current_sequence == FINISHED &&
+                                  textile_3_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 3
+    if (debounce(&textile_2_from3_debounce, sequence_2_from3_cond)) {
         update_sequence(SEQUENCE_E);
+        clear_debounce(&textile_2_from3_debounce);
     }
 
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == FINISHED &&
-        textile_4_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 4
-    {
+    bool sequence_2_from4_cond = (textile_1_current_sequence == IDLE &&
+                                  textile_2_current_sequence == IDLE &&
+                                  textile_3_current_sequence == FINISHED &&
+                                  textile_4_current_sequence == FINISHED &&
+                                  textile_4_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 4
+    if (debounce(&textile_2_from4_debounce, sequence_2_from4_cond)) {
         update_sequence(SEQUENCE_D);
+        clear_debounce(&textile_2_from4_debounce);
     }
 
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == FINISHED) // EVERY ONE IS FINISHED RETURN TO IDLE
-    {
+    bool sequence_2_all_finished = (textile_1_current_sequence == FINISHED &&
+                                    textile_2_current_sequence == FINISHED &&
+                                    textile_3_current_sequence == FINISHED &&
+                                    textile_4_current_sequence == FINISHED); // EVERY ONE IS FINISHED RETURN TO IDLE
+    if (debounce(&textile_2_finished_debounce, sequence_2_all_finished)) {
         uint32_t tmp = NOT_TRIGGERED;
         write_data_table(TAG_TEXTILE_2_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        
         update_sequence(IDLE);
+        clear_debounce(&textile_2_finished_debounce);
     }
 
     if( textile_2_current_sequence == SEQUENCE_A ){
@@ -1096,58 +1149,66 @@ void textile_2_loop(void){
 
 
 void textile_3_loop(void){
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == IDLE && 
-        textile_1_presence == 0 && 
-        textile_2_presence == 0 &&
-        textile_3_presence != 0 &&
-        textile_4_presence == 0 ) // STARTS SEQUENCE AT TEXT 3 SINGLE
-    {
+    static debounce_timer_st textile_3_single_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_from1_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_from2_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_from4_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_3_finished_debounce = {0, false, DEBOUNCE_TIMER};
+
+    bool sequence_3_single_cond = (textile_1_current_sequence == IDLE &&
+                                   textile_2_current_sequence == IDLE &&
+                                   textile_3_current_sequence == IDLE &&
+                                   textile_4_current_sequence == IDLE &&
+                                   textile_1_presence == 0 &&
+                                   textile_2_presence == 0 &&
+                                   textile_3_presence != 0 &&
+                                   textile_4_presence == 0); // STARTS SEQUENCE AT TEXT 3 SINGLE
+    if (debounce(&textile_3_single_debounce, sequence_3_single_cond)) {
         uint32_t tmp = SINGLE;
         write_data_table(TAG_TEXTILE_3_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        
         update_sequence(SEQUENCE_A);
+        clear_debounce(&textile_3_single_debounce);
     }
 
-
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == IDLE &&
-        textile_1_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 1
-    {
+    bool sequence_3_from1_cond = (textile_1_current_sequence == FINISHED &&
+                                  textile_2_current_sequence == FINISHED &&
+                                  textile_3_current_sequence == IDLE &&
+                                  textile_4_current_sequence == IDLE &&
+                                  textile_1_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 1
+    if (debounce(&textile_3_from1_debounce, sequence_3_from1_cond)) {
         update_sequence(SEQUENCE_B);
+        clear_debounce(&textile_3_from1_debounce);
     }
-    
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == IDLE &&
-        textile_2_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 2
-    {
+
+    bool sequence_3_from2_cond = (textile_1_current_sequence == FINISHED &&
+                                  textile_2_current_sequence == IDLE &&
+                                  textile_3_current_sequence == IDLE &&
+                                  textile_4_current_sequence == IDLE &&
+                                  textile_2_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 2
+    if (debounce(&textile_3_from2_debounce, sequence_3_from2_cond)) {
         update_sequence(SEQUENCE_C);
+        clear_debounce(&textile_3_from2_debounce);
     }
 
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == FINISHED &&
-        textile_4_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 4
-    {
+    bool sequence_3_from4_cond = (textile_1_current_sequence == IDLE &&
+                                  textile_2_current_sequence == IDLE &&
+                                  textile_3_current_sequence == IDLE &&
+                                  textile_4_current_sequence == FINISHED &&
+                                  textile_4_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 4
+    if (debounce(&textile_3_from4_debounce, sequence_3_from4_cond)) {
         update_sequence(SEQUENCE_D);
+        clear_debounce(&textile_3_from4_debounce);
     }
 
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == FINISHED) // EVERY ONE IS FINISHED RETURN TO IDLE
-    {
+    bool sequence_3_all_finished = (textile_1_current_sequence == FINISHED &&
+                                    textile_2_current_sequence == FINISHED &&
+                                    textile_3_current_sequence == FINISHED &&
+                                    textile_4_current_sequence == FINISHED); // EVERY ONE IS FINISHED RETURN TO IDLE
+    if (debounce(&textile_3_finished_debounce, sequence_3_all_finished)) {
         uint32_t tmp = NOT_TRIGGERED;
         write_data_table(TAG_TEXTILE_3_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        
         update_sequence(IDLE);
+        clear_debounce(&textile_3_finished_debounce);
     }
 
     if( textile_3_current_sequence == SEQUENCE_A ){
@@ -1319,58 +1380,66 @@ void textile_3_loop(void){
 
 
 void textile_4_loop(void){
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == IDLE &&
-        textile_4_current_sequence == IDLE && 
-        textile_1_presence == 0 && 
-        textile_2_presence == 0 &&
-        textile_3_presence == 0 &&
-        textile_4_presence != 0 ) // STARTS SEQUENCE AT TEXT 4 SINGLE
-    {
+    static debounce_timer_st textile_4_single_debounce   = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_from1_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_from2_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_from3_debounce    = {0, false, DEBOUNCE_TIMER};
+    static debounce_timer_st textile_4_finished_debounce = {0, false, DEBOUNCE_TIMER};
+
+    bool sequence_4_single_cond = (textile_1_current_sequence == IDLE &&
+                                   textile_2_current_sequence == IDLE &&
+                                   textile_3_current_sequence == IDLE &&
+                                   textile_4_current_sequence == IDLE &&
+                                   textile_1_presence == 0 &&
+                                   textile_2_presence == 0 &&
+                                   textile_3_presence == 0 &&
+                                   textile_4_presence != 0); // STARTS SEQUENCE AT TEXT 4 SINGLE
+    if (debounce(&textile_4_single_debounce, sequence_4_single_cond)) {
         uint32_t tmp = SINGLE;
         write_data_table(TAG_TEXTILE_4_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        
         update_sequence(SEQUENCE_C);
+        clear_debounce(&textile_4_single_debounce);
     }
 
-
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == IDLE &&
-        textile_1_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 1
-    {
+    bool sequence_4_from1_cond = (textile_1_current_sequence == FINISHED &&
+                                  textile_2_current_sequence == FINISHED &&
+                                  textile_3_current_sequence == FINISHED &&
+                                  textile_4_current_sequence == IDLE &&
+                                  textile_1_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 1
+    if (debounce(&textile_4_from1_debounce, sequence_4_from1_cond)) {
         update_sequence(SEQUENCE_B);
+        clear_debounce(&textile_4_from1_debounce);
     }
-    
-    if( textile_1_current_sequence == IDLE &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == IDLE &&
-        textile_2_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 2
-    {
+
+    bool sequence_4_from2_cond = (textile_1_current_sequence == IDLE &&
+                                  textile_2_current_sequence == FINISHED &&
+                                  textile_3_current_sequence == FINISHED &&
+                                  textile_4_current_sequence == IDLE &&
+                                  textile_2_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 2
+    if (debounce(&textile_4_from2_debounce, sequence_4_from2_cond)) {
         update_sequence(SEQUENCE_D);
+        clear_debounce(&textile_4_from2_debounce);
     }
 
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == IDLE &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == IDLE &&
-        textile_3_trigger_type == SINGLE) // STARTS SEQUENCE AT TEXT 3
-    {
+    bool sequence_4_from3_cond = (textile_1_current_sequence == FINISHED &&
+                                  textile_2_current_sequence == IDLE &&
+                                  textile_3_current_sequence == FINISHED &&
+                                  textile_4_current_sequence == IDLE &&
+                                  textile_3_trigger_type == SINGLE); // STARTS SEQUENCE AT TEXT 3
+    if (debounce(&textile_4_from3_debounce, sequence_4_from3_cond)) {
         update_sequence(SEQUENCE_E);
+        clear_debounce(&textile_4_from3_debounce);
     }
 
-    if( textile_1_current_sequence == FINISHED &&
-        textile_2_current_sequence == FINISHED &&
-        textile_3_current_sequence == FINISHED &&
-        textile_4_current_sequence == FINISHED) // EVERY ONE IS FINISHED RETURN TO IDLE
-    {
+    bool sequence_4_all_finished = (textile_1_current_sequence == FINISHED &&
+                                    textile_2_current_sequence == FINISHED &&
+                                    textile_3_current_sequence == FINISHED &&
+                                    textile_4_current_sequence == FINISHED); // EVERY ONE IS FINISHED RETURN TO IDLE
+    if (debounce(&textile_4_finished_debounce, sequence_4_all_finished)) {
         uint32_t tmp = NOT_TRIGGERED;
         write_data_table(TAG_TEXTILE_4_TRIGGER_TYPE, &tmp, sizeof(tmp));
-        
         update_sequence(IDLE);
+        clear_debounce(&textile_4_finished_debounce);
     }
 
     if( textile_4_current_sequence == SEQUENCE_A ){
