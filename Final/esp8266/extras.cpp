@@ -103,11 +103,11 @@ uint8_t sync_recv(broadcast_msg_st* msg)
 
 // Callback: when data is received (register this to receive messages)
 void OnDataRecv(uint8_t *mac_addr, uint8_t *data, uint8_t len) {
-    char macStr[18];
-    sprintf(macStr, "%02X:%02X:%02X:%02X:%02X:%02X", mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-
-    Serial.print("Received packet from: "); Serial.println(macStr);
-    Serial.print("Length: "); Serial.println(len);
+    if (len == sizeof(broadcast_msg_st) && !rx_available)
+    {
+        memcpy((void*)&rx_msg, data, sizeof(broadcast_msg_st));
+        rx_available = true;
+    }
     return;
 }
 
