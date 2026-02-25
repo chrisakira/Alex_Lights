@@ -667,7 +667,7 @@ void loop_sequence(uint8_t debug_info){
 
 
     static unsigned long lastTimeoutMs = 0;
-    const unsigned long TIMEOUT_VALUE  = 90000UL; // 90 sec
+    const unsigned long TIMEOUT_VALUE  = 12000UL; // 90 sec
  
     unsigned long now = millis();
 
@@ -806,19 +806,35 @@ void textile_1_loop(void){
 
     if( textile_1_current_sequence == SEQUENCE_A ){
         uint32_t current_timer = millis() - internal_sequence_timer;
+        uint8_t is_44_on = false;
+        uint8_t is_45_on = false;
         for (uint16_t i = 0 ; i < sequence_1_A_size ; i++)
         {
-            if((current_timer-10 >  sequence_1_A[i].time_starts_at) &&
-               (current_timer+10 <= sequence_1_A[i].time_ends_at))
+            if((current_timer > sequence_1_A[i].time_starts_at) &&
+               (current_timer < sequence_1_A[i].time_ends_at))
+            {
+                if (sequence_1_A[i].led_index.positive_pin == IDX_D44)
+                    is_44_on = true;
+                if (sequence_1_A[i].led_index.positive_pin == IDX_D45)
+                    is_45_on = true;
+            }
+        }
+        if(!is_44_on)
+            setPin(IDX_D44, 0);
+        else
+            setPin(IDX_D44, 255);
+
+        if(!is_45_on)
+            setPin(IDX_D45, 0);
+        else
+            setPin(IDX_D45, 255);
+        for (uint16_t i = 0 ; i < sequence_1_A_size ; i++)
+        {
+            if((current_timer > sequence_1_A[i].time_starts_at) &&
+               (current_timer < sequence_1_A[i].time_ends_at))
             {
                 uint32_t duration = (sequence_1_A[i].time_ends_at - sequence_1_A[i].time_starts_at);
                 uint32_t middle_point = (sequence_1_A[i].time_starts_at + (duration/2));
-                if (sequence_1_A[i].led_index.positive_pin == IDX_D44)
-                    setPin(IDX_D45, 0);
-                if (sequence_1_A[i].led_index.positive_pin == IDX_D45)
-                    setPin(IDX_D44, 0);
-
-                setPin(sequence_1_A[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_A[i].value_starts_at, sequence_1_A[i].value_ends_at);
@@ -844,18 +860,35 @@ void textile_1_loop(void){
 
     if( textile_1_current_sequence == SEQUENCE_B ){
         uint32_t current_timer = millis() - internal_sequence_timer;
+        uint8_t is_44_on = false;
+        uint8_t is_45_on = false;
         for (uint16_t i = 0 ; i < sequence_1_B_size ; i++)
         {
-            if((current_timer-10 >  sequence_1_B[i].time_starts_at) &&
-               (current_timer+10 <= sequence_1_B[i].time_ends_at))
+            if((current_timer > sequence_1_B[i].time_starts_at) &&
+               (current_timer < sequence_1_B[i].time_ends_at))
+            {
+                if (sequence_1_B[i].led_index.positive_pin == IDX_D44)
+                    is_44_on = true;
+                if (sequence_1_B[i].led_index.positive_pin == IDX_D45)
+                    is_45_on = true;
+            }
+        }
+        if(!is_44_on)
+            setPin(IDX_D44, 0);
+        else
+            setPin(IDX_D44, 255);
+
+        if(!is_45_on)
+            setPin(IDX_D45, 0);
+        else
+            setPin(IDX_D45, 255);
+        for (uint16_t i = 0 ; i < sequence_1_B_size ; i++)
+        {
+            if((current_timer > sequence_1_B[i].time_starts_at) &&
+               (current_timer < sequence_1_B[i].time_ends_at))
             {
                 uint32_t duration = (sequence_1_B[i].time_ends_at - sequence_1_B[i].time_starts_at);
                 uint32_t middle_point = (sequence_1_B[i].time_starts_at + (duration/2));
-                if (sequence_1_B[i].led_index.positive_pin == IDX_D44)
-                    setPin(IDX_D45, 0);
-                if (sequence_1_B[i].led_index.positive_pin == IDX_D45)
-                    setPin(IDX_D44, 0);
-                setPin(sequence_1_B[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_B[i].value_starts_at, sequence_1_B[i].value_ends_at);
@@ -881,18 +914,35 @@ void textile_1_loop(void){
 
     if( textile_1_current_sequence == SEQUENCE_C ){
         uint32_t current_timer = millis() - internal_sequence_timer;
+        uint8_t is_44_on = false;
+        uint8_t is_45_on = false;
         for (uint16_t i = 0 ; i < sequence_1_C_size ; i++)
         {
-            if((current_timer-10 >  sequence_1_C[i].time_starts_at) &&
-               (current_timer+10 <= sequence_1_C[i].time_ends_at))
+            if((current_timer > sequence_1_C[i].time_starts_at) &&
+               (current_timer < sequence_1_C[i].time_ends_at))
+            {
+                if (sequence_1_C[i].led_index.positive_pin == IDX_D44)
+                    is_44_on = true;
+                if (sequence_1_C[i].led_index.positive_pin == IDX_D45)
+                    is_45_on = true;
+            }
+        }
+        if(!is_44_on)
+            setPin(IDX_D44, 0);
+        else
+            setPin(IDX_D44, 255);
+
+        if(!is_45_on)
+            setPin(IDX_D45, 0);
+        else
+            setPin(IDX_D45, 255);
+        for (uint16_t i = 0 ; i < sequence_1_C_size ; i++)
+        {
+            if((current_timer > sequence_1_C[i].time_starts_at) &&
+               (current_timer < sequence_1_C[i].time_ends_at))
             {
                 uint32_t duration = (sequence_1_C[i].time_ends_at - sequence_1_C[i].time_starts_at);
                 uint32_t middle_point = (sequence_1_C[i].time_starts_at + (duration/2));
-                if (sequence_1_C[i].led_index.positive_pin == IDX_D44)
-                    setPin(IDX_D45, 0);
-                if (sequence_1_C[i].led_index.positive_pin == IDX_D45)
-                    setPin(IDX_D44, 0);
-                setPin(sequence_1_C[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer; 
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_C[i].value_starts_at, sequence_1_C[i].value_ends_at);
@@ -918,18 +968,35 @@ void textile_1_loop(void){
 
     if( textile_1_current_sequence == SEQUENCE_D ){
         uint32_t current_timer = millis() - internal_sequence_timer;
+        uint8_t is_44_on = false;
+        uint8_t is_45_on = false;
         for (uint16_t i = 0 ; i < sequence_1_D_size ; i++)
         {
-            if((current_timer-10 > sequence_1_D[i].time_starts_at) &&
+            if((current_timer > sequence_1_D[i].time_starts_at) &&
+               (current_timer < sequence_1_D[i].time_ends_at))
+            {
+                if (sequence_1_D[i].led_index.positive_pin == IDX_D44)
+                    is_44_on = true;
+                if (sequence_1_D[i].led_index.positive_pin == IDX_D45)
+                    is_45_on = true;
+            }
+        }
+        if(!is_44_on)
+            setPin(IDX_D44, 0);
+        else
+            setPin(IDX_D44, 255);
+
+        if(!is_45_on)
+            setPin(IDX_D45, 0);
+        else
+            setPin(IDX_D45, 255);
+        for (uint16_t i = 0 ; i < sequence_1_D_size ; i++)
+        {
+            if((current_timer > sequence_1_D[i].time_starts_at) &&
                (current_timer < sequence_1_D[i].time_ends_at))
             {
                 uint32_t duration = (sequence_1_D[i].time_ends_at - sequence_1_D[i].time_starts_at);
                 uint32_t middle_point = (sequence_1_D[i].time_starts_at + (duration/2));
-                if (sequence_1_D[i].led_index.positive_pin == IDX_D44)
-                    setPin(IDX_D45, 0);
-                if (sequence_1_D[i].led_index.positive_pin == IDX_D45)
-                    setPin(IDX_D44, 0);
-                setPin(sequence_1_D[i].led_index.positive_pin, 255);
                 if(current_timer <= middle_point){
                     uint32_t duration_left = middle_point - current_timer;
                     uint8_t mapped_value = map(duration_left, (duration/2), 0, sequence_1_D[i].value_starts_at, sequence_1_D[i].value_ends_at);
@@ -957,8 +1024,8 @@ void textile_1_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_1_P_size ; i++)
         {
-            if((current_timer-10 >  sequence_1_P[i].time_starts_at) &&
-               (current_timer+10 <= sequence_1_P[i].time_ends_at))
+            if((current_timer > sequence_1_P[i].time_starts_at) &&
+               (current_timer < sequence_1_P[i].time_ends_at))
             {
                 uint32_t duration = (sequence_1_P[i].time_ends_at - sequence_1_P[i].time_starts_at);
                 uint32_t middle_point = (sequence_1_P[i].time_starts_at + (duration/2));
@@ -1130,8 +1197,8 @@ void textile_2_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_2_A_size ; i++)
         {
-            if((current_timer-10 >  sequence_2_A[i].time_starts_at) &&
-               (current_timer+10 <= sequence_2_A[i].time_ends_at))
+            if((current_timer > sequence_2_A[i].time_starts_at) &&
+               (current_timer < sequence_2_A[i].time_ends_at))
             {
                 uint32_t duration = (sequence_2_A[i].time_ends_at - sequence_2_A[i].time_starts_at);
                 uint32_t middle_point = (sequence_2_A[i].time_starts_at + (duration/2));
@@ -1167,8 +1234,8 @@ void textile_2_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_2_B_size ; i++)
         {
-            if((current_timer-10 >  sequence_2_B[i].time_starts_at) &&
-               (current_timer+10 <= sequence_2_B[i].time_ends_at))
+            if((current_timer > sequence_2_B[i].time_starts_at) &&
+               (current_timer < sequence_2_B[i].time_ends_at))
             {
                 uint32_t duration = (sequence_2_B[i].time_ends_at - sequence_2_B[i].time_starts_at);
                 uint32_t middle_point = (sequence_2_B[i].time_starts_at + (duration/2));
@@ -1204,8 +1271,8 @@ void textile_2_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_2_C_size ; i++)
         {
-            if((current_timer-10 >  sequence_2_C[i].time_starts_at) &&
-               (current_timer+10 <= sequence_2_C[i].time_ends_at))
+            if((current_timer > sequence_2_C[i].time_starts_at) &&
+               (current_timer < sequence_2_C[i].time_ends_at))
             {
                 uint32_t duration = (sequence_2_C[i].time_ends_at - sequence_2_C[i].time_starts_at);
                 uint32_t middle_point = (sequence_2_C[i].time_starts_at + (duration/2));
@@ -1241,8 +1308,8 @@ void textile_2_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_2_D_size ; i++)
         {
-            if((current_timer-10 >  sequence_2_D[i].time_starts_at) &&
-               (current_timer+10 <= sequence_2_D[i].time_ends_at))
+            if((current_timer > sequence_2_D[i].time_starts_at) &&
+               (current_timer < sequence_2_D[i].time_ends_at))
             {
                 uint32_t duration = (sequence_2_D[i].time_ends_at - sequence_2_D[i].time_starts_at);
                 uint32_t middle_point = (sequence_2_D[i].time_starts_at + (duration/2));
@@ -1278,8 +1345,8 @@ void textile_2_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_2_E_size ; i++)
         {
-            if((current_timer-10 >  sequence_2_E[i].time_starts_at) &&
-               (current_timer+10 <= sequence_2_E[i].time_ends_at))
+            if((current_timer > sequence_2_E[i].time_starts_at) &&
+               (current_timer < sequence_2_E[i].time_ends_at))
             {
                 uint32_t duration = (sequence_2_E[i].time_ends_at - sequence_2_E[i].time_starts_at);
                 uint32_t middle_point = (sequence_2_E[i].time_starts_at + (duration/2));
@@ -1315,8 +1382,8 @@ void textile_2_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_2_P_size ; i++)
         {
-            if((current_timer-10 >  sequence_2_P[i].time_starts_at) &&
-               (current_timer+10 <= sequence_2_P[i].time_ends_at))
+            if((current_timer > sequence_2_P[i].time_starts_at) &&
+               (current_timer < sequence_2_P[i].time_ends_at))
             {
                 uint32_t duration = (sequence_2_P[i].time_ends_at - sequence_2_P[i].time_starts_at);
                 uint32_t middle_point = (sequence_2_P[i].time_starts_at + (duration/2));
@@ -1488,8 +1555,8 @@ void textile_3_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_3_A_size ; i++)
         {
-            if((current_timer-10 >  sequence_3_A[i].time_starts_at) &&
-               (current_timer+10 <= sequence_3_A[i].time_ends_at))
+            if((current_timer > sequence_3_A[i].time_starts_at) &&
+               (current_timer < sequence_3_A[i].time_ends_at))
             {
                 uint32_t duration = (sequence_3_A[i].time_ends_at - sequence_3_A[i].time_starts_at);
                 uint32_t middle_point = (sequence_3_A[i].time_starts_at + (duration/2));
@@ -1525,8 +1592,8 @@ void textile_3_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_3_B_size ; i++)
         {
-            if((current_timer-10 >  sequence_3_B[i].time_starts_at) &&
-               (current_timer+10 <= sequence_3_B[i].time_ends_at))
+            if((current_timer > sequence_3_B[i].time_starts_at) &&
+               (current_timer < sequence_3_B[i].time_ends_at))
             {
                 uint32_t duration = (sequence_3_B[i].time_ends_at - sequence_3_B[i].time_starts_at);
                 uint32_t middle_point = (sequence_3_B[i].time_starts_at + (duration/2));
@@ -1562,8 +1629,8 @@ void textile_3_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_3_C_size ; i++)
         {
-            if((current_timer-10 >  sequence_3_C[i].time_starts_at) &&
-               (current_timer+10 <= sequence_3_C[i].time_ends_at))
+            if((current_timer > sequence_3_C[i].time_starts_at) &&
+               (current_timer < sequence_3_C[i].time_ends_at))
             {
                 uint32_t duration = (sequence_3_C[i].time_ends_at - sequence_3_C[i].time_starts_at);
                 uint32_t middle_point = (sequence_3_C[i].time_starts_at + (duration/2));
@@ -1599,8 +1666,8 @@ void textile_3_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_3_D_size ; i++)
         {
-            if((current_timer-10 >  sequence_3_D[i].time_starts_at) &&
-               (current_timer+10 <= sequence_3_D[i].time_ends_at))
+            if((current_timer > sequence_3_D[i].time_starts_at) &&
+               (current_timer < sequence_3_D[i].time_ends_at))
             {
                 uint32_t duration = (sequence_3_D[i].time_ends_at - sequence_3_D[i].time_starts_at);
                 uint32_t middle_point = (sequence_3_D[i].time_starts_at + (duration/2));
@@ -1636,8 +1703,8 @@ void textile_3_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_3_P_size ; i++)
         {
-            if((current_timer-10 >  sequence_3_P[i].time_starts_at) &&
-               (current_timer+10 <= sequence_3_P[i].time_ends_at))
+            if((current_timer > sequence_3_P[i].time_starts_at) &&
+               (current_timer < sequence_3_P[i].time_ends_at))
             {
                 uint32_t duration = (sequence_3_P[i].time_ends_at - sequence_3_P[i].time_starts_at);
                 uint32_t middle_point = (sequence_3_P[i].time_starts_at + (duration/2));
@@ -1799,8 +1866,8 @@ void textile_4_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_4_A_size ; i++)
         {
-            if((current_timer-10 >  sequence_4_A[i].time_starts_at) &&
-               (current_timer+10 <= sequence_4_A[i].time_ends_at))
+            if((current_timer > sequence_4_A[i].time_starts_at) &&
+               (current_timer < sequence_4_A[i].time_ends_at))
             {
                 uint32_t duration = (sequence_4_A[i].time_ends_at - sequence_4_A[i].time_starts_at);
                 uint32_t middle_point = (sequence_4_A[i].time_starts_at + (duration/2));
@@ -1836,8 +1903,8 @@ void textile_4_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_4_B_size ; i++)
         {
-            if((current_timer-10 >  sequence_4_B[i].time_starts_at) &&
-               (current_timer+10 <= sequence_4_B[i].time_ends_at))
+            if((current_timer > sequence_4_B[i].time_starts_at) &&
+               (current_timer < sequence_4_B[i].time_ends_at))
             {
                 uint32_t duration = (sequence_4_B[i].time_ends_at - sequence_4_B[i].time_starts_at);
                 uint32_t middle_point = (sequence_4_B[i].time_starts_at + (duration/2));
@@ -1873,8 +1940,8 @@ void textile_4_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_4_C_size ; i++)
         {
-            if((current_timer-10 >  sequence_4_C[i].time_starts_at) &&
-               (current_timer+10 <= sequence_4_C[i].time_ends_at))
+            if((current_timer > sequence_4_C[i].time_starts_at) &&
+               (current_timer < sequence_4_C[i].time_ends_at))
             {
                 uint32_t duration = (sequence_4_C[i].time_ends_at - sequence_4_C[i].time_starts_at);
                 uint32_t middle_point = (sequence_4_C[i].time_starts_at + (duration/2));
@@ -1910,8 +1977,8 @@ void textile_4_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_4_D_size ; i++)
         {
-            if((current_timer-10 >  sequence_4_D[i].time_starts_at) &&
-               (current_timer+10 <= sequence_4_D[i].time_ends_at))
+            if((current_timer > sequence_4_D[i].time_starts_at) &&
+               (current_timer < sequence_4_D[i].time_ends_at))
             {
                 uint32_t duration = (sequence_4_D[i].time_ends_at - sequence_4_D[i].time_starts_at);
                 uint32_t middle_point = (sequence_4_D[i].time_starts_at + (duration/2));
@@ -1947,8 +2014,8 @@ void textile_4_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_4_E_size ; i++)
         {
-            if((current_timer-10 >  sequence_4_E[i].time_starts_at) &&
-               (current_timer+10 <= sequence_4_E[i].time_ends_at))
+            if((current_timer > sequence_4_E[i].time_starts_at) &&
+               (current_timer < sequence_4_E[i].time_ends_at))
             {
                 uint32_t duration = (sequence_4_E[i].time_ends_at - sequence_4_E[i].time_starts_at);
                 uint32_t middle_point = (sequence_4_E[i].time_starts_at + (duration/2));
@@ -1984,8 +2051,8 @@ void textile_4_loop(void){
         uint32_t current_timer = millis() - internal_sequence_timer;
         for (uint16_t i = 0 ; i < sequence_4_P_size ; i++)
         {
-            if((current_timer-10 >  sequence_4_P[i].time_starts_at) &&
-               (current_timer+10 <= sequence_4_P[i].time_ends_at))
+            if((current_timer > sequence_4_P[i].time_starts_at) &&
+               (current_timer < sequence_4_P[i].time_ends_at))
             {
                 uint32_t duration = (sequence_4_P[i].time_ends_at - sequence_4_P[i].time_starts_at);
                 uint32_t middle_point = (sequence_4_P[i].time_starts_at + (duration/2));

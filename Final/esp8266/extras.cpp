@@ -10,6 +10,7 @@ Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 // Send a single [pinIndex, value] command to the expander.
 void setPin(uint8_t pinIndex, uint8_t value) {
+    delay(1);
     Wire.beginTransmission(I2C_SLAVE_ADDR); 
     Wire.write(pinIndex);
     Wire.write(value);
