@@ -665,7 +665,7 @@ void loop_sequence(uint8_t debug_info){
             break;
     }
 
-
+ 
     static unsigned long lastTimeoutMs = 0;
     const unsigned long TIMEOUT_VALUE  = 12000UL; // 90 sec
  
