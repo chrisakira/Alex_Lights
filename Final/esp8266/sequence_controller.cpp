@@ -716,6 +716,7 @@ void textile_1_loop(void){
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_1_single_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Double: device 1 + one other → 1D (device 1 always primary)
@@ -724,6 +725,7 @@ void textile_1_loop(void){
         update_trigger(DOUBLE);
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_1_double_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Triple: device 1 + two others → 1P immediately
@@ -732,6 +734,7 @@ void textile_1_loop(void){
         update_trigger(TRIPLE);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_1_triple_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Four: all devices → 1P immediately
@@ -740,6 +743,7 @@ void textile_1_loop(void){
         update_trigger(FOUR);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_1_four_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 2 chain: 2B → 3C → 4D → 1C
@@ -752,6 +756,7 @@ void textile_1_loop(void){
     if (debounce(&textile_1_from2_debounce, sequence_1_from2_cond)) {
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_1_from2_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 3 chain: 3A → 1A
@@ -764,6 +769,7 @@ void textile_1_loop(void){
     if (debounce(&textile_1_from3_debounce, sequence_1_from3_cond)) {
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_1_from3_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 4 chain: 4C → 3D → 2D → 1B
@@ -777,6 +783,7 @@ void textile_1_loop(void){
     if (debounce(&textile_1_from4_debounce, sequence_1_from4_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_1_from4_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From triple (2+3+4): device 1 is the 4th, plays P after others finish
@@ -790,6 +797,7 @@ void textile_1_loop(void){
     if (debounce(&textile_1_from_triple_debounce, sequence_1_from_triple_cond)) {
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_1_from_triple_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // All finished → reset (device 1 is never DOUBLE secondary)
@@ -1138,6 +1146,7 @@ void textile_2_loop(void){
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_2_single_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Double primary: device 2 + higher device only (no device 1) → 2B
@@ -1147,6 +1156,7 @@ void textile_2_loop(void){
         update_trigger(DOUBLE);
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_2_double_pri_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Double secondary: device 2 + device 1 (lower present) → just set trigger, wait
@@ -1155,6 +1165,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_double_sec_debounce, sequence_2_double_sec)) {
         update_trigger(DOUBLE);
         clear_debounce(&textile_2_double_sec_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Triple: device 2 + two others → 2P immediately
@@ -1163,6 +1174,7 @@ void textile_2_loop(void){
         update_trigger(TRIPLE);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_2_triple_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Four: all devices → 2P immediately
@@ -1171,6 +1183,7 @@ void textile_2_loop(void){
         update_trigger(FOUR);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_2_four_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 1 chain: 1D → 2A
@@ -1182,6 +1195,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_from1_debounce, sequence_2_from1_cond)) {
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_2_from1_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 3 chain: 3A → 1A → 4E → 2E
@@ -1195,6 +1209,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_from3_debounce, sequence_2_from3_cond)) {
         update_sequence(SEQUENCE_E);
         clear_debounce(&textile_2_from3_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 4 chain: 4C → 3D → 2D
@@ -1208,6 +1223,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_from4_debounce, sequence_2_from4_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_2_from4_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From triple (1+3+4): device 2 is the 4th, plays P after others finish
@@ -1221,6 +1237,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_from_triple_debounce, sequence_2_from_triple_cond)) {
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_2_from_triple_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // All finished
@@ -1232,6 +1249,7 @@ void textile_2_loop(void){
         // Check if device 2 is DOUBLE secondary (paired with device 1)
         if (textile_2_trigger_type == DOUBLE && textile_1_trigger_type == DOUBLE) {
             update_sequence(SEQUENCE_P);
+            delay(200); // Small delay to everyone gets the update
         } else {
             delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
@@ -1635,6 +1653,7 @@ void textile_3_loop(void){
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_3_single_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Double primary: device 3 + device 4 only (no device 1 or 2) → 3A
@@ -1644,6 +1663,7 @@ void textile_3_loop(void){
         update_trigger(DOUBLE);
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_3_double_pri_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Double secondary: device 3 + lower device (1 or 2) → just set trigger, wait
@@ -1652,6 +1672,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_double_sec_debounce, sequence_3_double_sec)) {
         update_trigger(DOUBLE);
         clear_debounce(&textile_3_double_sec_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Triple: device 3 + two others → 3P immediately
@@ -1660,6 +1681,7 @@ void textile_3_loop(void){
         update_trigger(TRIPLE);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_3_triple_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Four: all devices → 3P immediately
@@ -1668,6 +1690,7 @@ void textile_3_loop(void){
         update_trigger(FOUR);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_3_four_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 1 chain: 1D → 2A → 3B
@@ -1679,6 +1702,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_from1_debounce, sequence_3_from1_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_3_from1_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 2 chain: 2B → 3C
@@ -1691,6 +1715,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_from2_debounce, sequence_3_from2_cond)) {
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_3_from2_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 4 chain: 4C → 3D
@@ -1704,6 +1729,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_from4_debounce, sequence_3_from4_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_3_from4_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From triple (1+2+4): device 3 is the 4th, plays P after others finish
@@ -1717,6 +1743,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_from_triple_debounce, sequence_3_from_triple_cond)) {
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_3_from_triple_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // All finished
@@ -1728,7 +1755,8 @@ void textile_3_loop(void){
         // Check if device 3 is DOUBLE secondary (paired with device 1 or 2)
         if (textile_3_trigger_type == DOUBLE &&
             (textile_1_trigger_type == DOUBLE || textile_2_trigger_type == DOUBLE)) {
-            update_sequence(SEQUENCE_P);
+                update_sequence(SEQUENCE_P);
+                delay(500); // Small delay to everyone gets the update
         } else {
             delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
@@ -2071,6 +2099,7 @@ void textile_4_loop(void){
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_4_single_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Double secondary: device 4 is always secondary (highest number) → just set trigger, wait
@@ -2078,6 +2107,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_double_sec_debounce, sequence_4_double_sec)) {
         update_trigger(DOUBLE);
         clear_debounce(&textile_4_double_sec_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Triple: device 4 + two others → 4P immediately
@@ -2086,6 +2116,7 @@ void textile_4_loop(void){
         update_trigger(TRIPLE);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_4_triple_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // Four: all devices → 4P immediately
@@ -2094,6 +2125,7 @@ void textile_4_loop(void){
         update_trigger(FOUR);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_4_four_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 1 chain: 1D → 2A → 3B → 4B
@@ -2105,6 +2137,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_from1_debounce, sequence_4_from1_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_4_from1_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 2 chain: 2B → 3C → 4D
@@ -2117,6 +2150,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_from2_debounce, sequence_4_from2_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_4_from2_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From textile 3 chain: 3A → 1A → 4E
@@ -2130,6 +2164,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_from3_debounce, sequence_4_from3_cond)) {
         update_sequence(SEQUENCE_E);
         clear_debounce(&textile_4_from3_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // From triple (1+2+3): device 4 is the 4th, plays P after others finish
@@ -2143,6 +2178,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_from_triple_debounce, sequence_4_from_triple_cond)) {
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_4_from_triple_debounce);
+        delay(200); // Small delay to everyone gets the update
     }
 
     // All finished
@@ -2156,6 +2192,7 @@ void textile_4_loop(void){
             (textile_1_trigger_type == DOUBLE || textile_2_trigger_type == DOUBLE ||
              textile_3_trigger_type == DOUBLE)) {
             update_sequence(SEQUENCE_P);
+            delay(200); // Small delay to everyone gets the update
         } else {
             delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
