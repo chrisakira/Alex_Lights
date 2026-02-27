@@ -14,10 +14,11 @@
 
 #define TEXT_1_B1 {IDX_D44, IDX_D3} 
 #define TEXT_1_B2 {IDX_D44, IDX_D2}
-#define TEXT_1_B3 {IDX_D45, IDX_D4}
-#define TEXT_1_B4 {IDX_D44, IDX_D5}
-#define TEXT_1_B5 {IDX_D44, IDX_D6}
-#define TEXT_1_B6 {IDX_D45, IDX_D5}
+#define TEXT_1_B3 {IDX_D44, IDX_D2}
+#define TEXT_1_B4 {IDX_D45, IDX_D4}
+#define TEXT_1_B5 {IDX_D45, IDX_D6}
+#define TEXT_1_B6 {IDX_D44, IDX_D5}
+#define TEXT_1_B7 {IDX_D44, IDX_D6}
 
 #define TEXT_1_C1 {IDX_D44, IDX_D3}
 #define TEXT_1_C2 {IDX_D44, IDX_D4}
@@ -27,12 +28,10 @@
 
 #define TEXT_1_D1 {IDX_D45, IDX_D5}
 #define TEXT_1_D2 {IDX_D44, IDX_D6}
-#define TEXT_1_D3 {IDX_D45, IDX_D6}
-#define TEXT_1_D4 {IDX_D44, IDX_D5}
-#define TEXT_1_D5 {IDX_D45, IDX_D4}
-#define TEXT_1_D6 {IDX_D44, IDX_D4}
-#define TEXT_1_D7 {IDX_D44, IDX_D2}
-#define TEXT_1_D8 {IDX_D44, IDX_D3}
+#define TEXT_1_D3 {IDX_D44, IDX_D5}
+#define TEXT_1_D4 {IDX_D45, IDX_D4}
+#define TEXT_1_D5 {IDX_D44, IDX_D2}
+#define TEXT_1_D6 {IDX_D44, IDX_D3}
 
 #define TEXT_1_P1 {IDX_D44, IDX_D4}
 #define TEXT_1_P2 {IDX_D45, IDX_D6}
@@ -101,16 +100,16 @@
 #define TEXT_3_B3 {IDX_D44, IDX_D2}
 
 #define TEXT_3_C1  {IDX_D44, IDX_D3}
-#define TEXT_3_C2  {IDX_D44, IDX_D6}
-#define TEXT_3_C3  {IDX_D44, IDX_D9}
-#define TEXT_3_C4  {IDX_D44, IDX_D4}
-#define TEXT_3_C5  {IDX_D44, IDX_D7}
-#define TEXT_3_C6  {IDX_D44, IDX_D10}
-#define TEXT_3_C7  {IDX_D45, IDX_D4}
-#define TEXT_3_C8  {IDX_D45, IDX_D7}
-#define TEXT_3_C9  {IDX_D45, IDX_D10}
-#define TEXT_3_C10 {IDX_D45, IDX_D6}
-#define TEXT_3_C11 {IDX_D45, IDX_D9}
+#define TEXT_3_C2  {IDX_D44, IDX_D4}
+#define TEXT_3_C3  {IDX_D45, IDX_D4}
+#define TEXT_3_C4  {IDX_D45, IDX_D6}
+#define TEXT_3_C5  {IDX_D44, IDX_D6}
+#define TEXT_3_C6  {IDX_D44, IDX_D7}
+#define TEXT_3_C7  {IDX_D45, IDX_D7}
+#define TEXT_3_C8  {IDX_D45, IDX_D9}
+#define TEXT_3_C9  {IDX_D44, IDX_D9}
+#define TEXT_3_C10 {IDX_D44, IDX_D10}
+#define TEXT_3_C11 {IDX_D45, IDX_D10}
 #define TEXT_3_C12 {IDX_D45, IDX_D11}
 
 #define TEXT_3_D1 {IDX_D44, IDX_D2}
@@ -142,10 +141,13 @@
 #define TEXT_4_C1 {IDX_D45, IDX_D7}
 #define TEXT_4_C2 {IDX_D44, IDX_D7}
 #define TEXT_4_C3 {IDX_D44, IDX_D6}
-#define TEXT_4_C4 {IDX_D45, IDX_D6}
-#define TEXT_4_C5 {IDX_D45, IDX_D4}
-#define TEXT_4_C6 {IDX_D44, IDX_D4}
-#define TEXT_4_C7 {IDX_D44, IDX_D3}
+#define TEXT_4_C4 {IDX_D45, IDX_D5}
+#define TEXT_4_C5 {IDX_D45, IDX_D6}
+#define TEXT_4_C6 {IDX_D45, IDX_D4}
+#define TEXT_4_C7 {IDX_D44, IDX_D5}
+#define TEXT_4_C8 {IDX_D44, IDX_D4}
+#define TEXT_4_C9 {IDX_D44, IDX_D3}
+#define TEXT_4_C10 {IDX_D44, IDX_D2}
 
 #define TEXT_4_D1 {IDX_D44, IDX_D7}
 #define TEXT_4_D2 {IDX_D45, IDX_D8}
