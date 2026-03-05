@@ -843,6 +843,7 @@ void textile_1_loop(void){
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_1_single_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -852,6 +853,7 @@ void textile_1_loop(void){
         update_trigger(DOUBLE);
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_1_double_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -861,6 +863,7 @@ void textile_1_loop(void){
         update_trigger(TRIPLE);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_1_triple_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -870,6 +873,7 @@ void textile_1_loop(void){
         update_trigger(FOUR);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_1_four_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -883,6 +887,7 @@ void textile_1_loop(void){
     if (debounce(&textile_1_from2_debounce, sequence_1_from2_cond)) {
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_1_from2_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -896,6 +901,7 @@ void textile_1_loop(void){
     if (debounce(&textile_1_from3_debounce, sequence_1_from3_cond)) {
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_1_from3_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -910,6 +916,7 @@ void textile_1_loop(void){
     if (debounce(&textile_1_from4_debounce, sequence_1_from4_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_1_from4_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -924,6 +931,7 @@ void textile_1_loop(void){
     if (debounce(&textile_1_from_triple_debounce, sequence_1_from_triple_cond)) {
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_1_from_triple_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -933,6 +941,7 @@ void textile_1_loop(void){
                                     textile_3_current_sequence == FINISHED &&
                                     textile_4_current_sequence == FINISHED);
     if (debounce(&textile_1_finished_debounce, sequence_1_all_finished)) {
+        clearPins();
         delay(500); // Small delay to ensure the last sequence finishes before resetting
         update_trigger(NOT_TRIGGERED);
         update_sequence(IDLE);
@@ -1273,6 +1282,7 @@ void textile_2_loop(void){
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_2_single_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1283,6 +1293,7 @@ void textile_2_loop(void){
         update_trigger(DOUBLE);
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_2_double_pri_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1292,6 +1303,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_double_sec_debounce, sequence_2_double_sec)) {
         update_trigger(DOUBLE);
         clear_debounce(&textile_2_double_sec_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1301,6 +1313,7 @@ void textile_2_loop(void){
         update_trigger(TRIPLE);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_2_triple_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1310,6 +1323,7 @@ void textile_2_loop(void){
         update_trigger(FOUR);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_2_four_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1322,6 +1336,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_from1_debounce, sequence_2_from1_cond)) {
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_2_from1_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1336,6 +1351,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_from3_debounce, sequence_2_from3_cond)) {
         update_sequence(SEQUENCE_E);
         clear_debounce(&textile_2_from3_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1350,6 +1366,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_from4_debounce, sequence_2_from4_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_2_from4_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1364,6 +1381,7 @@ void textile_2_loop(void){
     if (debounce(&textile_2_from_triple_debounce, sequence_2_from_triple_cond)) {
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_2_from_triple_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1376,8 +1394,10 @@ void textile_2_loop(void){
         // Check if device 2 is DOUBLE secondary (paired with device 1)
         if (textile_2_trigger_type == DOUBLE && textile_1_trigger_type == DOUBLE) {
             update_sequence(SEQUENCE_P);
+            clearPins();
             delay(200); // Small delay to everyone gets the update
         } else {
+            clearPins();
             delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
             update_sequence(IDLE);
@@ -1780,6 +1800,7 @@ void textile_3_loop(void){
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_3_single_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1790,6 +1811,7 @@ void textile_3_loop(void){
         update_trigger(DOUBLE);
         update_sequence(SEQUENCE_A);
         clear_debounce(&textile_3_double_pri_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1799,6 +1821,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_double_sec_debounce, sequence_3_double_sec)) {
         update_trigger(DOUBLE);
         clear_debounce(&textile_3_double_sec_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1808,6 +1831,7 @@ void textile_3_loop(void){
         update_trigger(TRIPLE);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_3_triple_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1817,6 +1841,7 @@ void textile_3_loop(void){
         update_trigger(FOUR);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_3_four_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1829,6 +1854,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_from1_debounce, sequence_3_from1_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_3_from1_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1842,6 +1868,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_from2_debounce, sequence_3_from2_cond)) {
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_3_from2_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1856,6 +1883,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_from4_debounce, sequence_3_from4_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_3_from4_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1870,6 +1898,7 @@ void textile_3_loop(void){
     if (debounce(&textile_3_from_triple_debounce, sequence_3_from_triple_cond)) {
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_3_from_triple_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -1883,8 +1912,10 @@ void textile_3_loop(void){
         if (textile_3_trigger_type == DOUBLE &&
             (textile_1_trigger_type == DOUBLE || textile_2_trigger_type == DOUBLE)) {
                 update_sequence(SEQUENCE_P);
+                clearPins();
                 delay(500); // Small delay to everyone gets the update
         } else {
+            clearPins();
             delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
             update_sequence(IDLE);
@@ -2226,6 +2257,7 @@ void textile_4_loop(void){
         update_trigger(SINGLE);
         update_sequence(SEQUENCE_C);
         clear_debounce(&textile_4_single_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -2234,6 +2266,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_double_sec_debounce, sequence_4_double_sec)) {
         update_trigger(DOUBLE);
         clear_debounce(&textile_4_double_sec_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -2243,6 +2276,7 @@ void textile_4_loop(void){
         update_trigger(TRIPLE);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_4_triple_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -2252,6 +2286,7 @@ void textile_4_loop(void){
         update_trigger(FOUR);
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_4_four_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -2264,6 +2299,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_from1_debounce, sequence_4_from1_cond)) {
         update_sequence(SEQUENCE_B);
         clear_debounce(&textile_4_from1_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -2277,6 +2313,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_from2_debounce, sequence_4_from2_cond)) {
         update_sequence(SEQUENCE_D);
         clear_debounce(&textile_4_from2_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -2291,6 +2328,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_from3_debounce, sequence_4_from3_cond)) {
         update_sequence(SEQUENCE_E);
         clear_debounce(&textile_4_from3_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -2305,6 +2343,7 @@ void textile_4_loop(void){
     if (debounce(&textile_4_from_triple_debounce, sequence_4_from_triple_cond)) {
         update_sequence(SEQUENCE_P);
         clear_debounce(&textile_4_from_triple_debounce);
+        clearPins();
         delay(200); // Small delay to everyone gets the update
     }
 
@@ -2319,8 +2358,10 @@ void textile_4_loop(void){
             (textile_1_trigger_type == DOUBLE || textile_2_trigger_type == DOUBLE ||
              textile_3_trigger_type == DOUBLE)) {
             update_sequence(SEQUENCE_P);
+            clearPins();
             delay(200); // Small delay to everyone gets the update
         } else {
+            clearPins();
             delay(500); // Small delay to ensure the last sequence finishes before resetting
             update_trigger(NOT_TRIGGERED);
             update_sequence(IDLE);

@@ -20,12 +20,12 @@ void setPin(uint8_t pinIndex, uint8_t value) {
 
 // Reset all D2–D13 channels to 0.
 void clearPins() {
-    for (uint8_t i = IDX_D2; i <= IDX_D13; i++) {
-        setPin(i, 0);
-    }
     setPin(IDX_D44, 0);
     setPin(IDX_D45, 0);
     setPin(IDX_D46, 0);
+    for (uint8_t i = IDX_D2; i <= IDX_D13; i++) {
+        setPin(i, 0);
+    }
 }
 
 uint32_t get_laser_range(void)

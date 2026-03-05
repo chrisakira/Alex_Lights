@@ -21,9 +21,9 @@ void loop() {
     static unsigned long lastSeqMs = 0;
     static unsigned long lastSyncMs = 0;
     static unsigned long lastLedMs = 0;
-    const unsigned long SEQ_INTERVAL = 10UL; // 20 ms
-    const unsigned long LED_INTERVAL = 50UL; // 20 ms
-    const unsigned long SYNC_INTERVAL = 5UL; // 10 ms
+    const unsigned long SEQ_INTERVAL = 10UL; // 10 ms
+    const unsigned long LED_INTERVAL = 100UL; // 100 ms
+    const unsigned long SYNC_INTERVAL = 5UL; // 5 ms
 
     unsigned long now = millis();
 

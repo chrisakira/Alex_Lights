@@ -38,13 +38,6 @@ void setup() {
   Wire.begin(I2C_SLAVE_ADDRESS);
   Wire.onReceive(onReceiveI2C);
 
-  // Optional: debug output over USB Serial
-  Serial.begin(115200);
-  Serial.print(F("I2C IO Expander ready. Address: 0x"));
-  Serial.println(I2C_SLAVE_ADDRESS, HEX);
-  Serial.print(F("Controlling "));
-  Serial.print(PIN_COUNT);
-  Serial.println(F(" PWM pins."));
 }
 
 // ── Main Loop ──────────────────────────────────────────────────────────────────
@@ -59,14 +52,6 @@ void loop() {
     if (pinIdx < PIN_COUNT) {
       uint8_t clamped = (value > 255) ? 255 : value;
       analogWrite(PWM_PINS[pinIdx], clamped);
-
-      Serial.print(F("D"));
-      Serial.print(PWM_PINS[pinIdx]);
-      Serial.print(F(" -> "));
-      Serial.println(clamped);
-    } else {
-      Serial.print(F("ERR: Invalid pin index "));
-      Serial.println(pinIdx);
     }
   }
 }
